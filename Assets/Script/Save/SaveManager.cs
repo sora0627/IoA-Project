@@ -2,17 +2,55 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SaveManager : MonoBehaviour
+public class SaveManager : Singleton<SaveManager>
 {
-    // Start is called before the first frame update
-    void Start()
+    public void SetInt(string key, int value)
     {
-        
+        PlayerPrefs.SetInt(key, value);
+        PlayerPrefs.Save();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SetFloat(string key, float value)
     {
-        
+        PlayerPrefs.SetFloat(key, value);
+        PlayerPrefs.Save();
+    }
+
+    public void SetString(string key, string value)
+    {
+        PlayerPrefs.SetString(key, value);
+        PlayerPrefs.Save();
+    }
+
+    public int GetInt(string key)
+    {
+        return PlayerPrefs.GetInt(key);
+    }
+
+    public float GetFloat(string key)
+    {
+        return PlayerPrefs.GetFloat(key);
+    }
+
+    public string GetString(string key)
+    {
+        return PlayerPrefs.GetString(key);
+    }
+
+    public bool HasKey(string key)
+    {
+        return PlayerPrefs.HasKey(key);
+    }
+
+    public void DeleteKey(string key)
+    {
+        PlayerPrefs.DeleteKey(key);
+        PlayerPrefs.Save();
+    }
+
+    public void DeleteAll()
+    {
+        PlayerPrefs.DeleteAll();
+        PlayerPrefs.Save();
     }
 }
