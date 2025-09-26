@@ -1,0 +1,32 @@
+# Unity-specific files
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Ss]ettings/
+[Ee]xport/
+[Pp]ackages/
+[Dd]ata/
+*.unityproj
+*.csproj
+*.sln
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.sln.DotSettings
+*.sln.DotSettings.user
+*.suo
+*.tmp
+*.csproj.user
+*.DS_Store
+*.meta
+*.bin
+*.pdb
+*.orig
+
+# Visual Studio files
+.vs/
+.vsconfig
