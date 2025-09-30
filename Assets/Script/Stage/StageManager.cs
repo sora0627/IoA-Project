@@ -19,8 +19,10 @@ public class StageManager : MonoBehaviour
         get { return state == State.Ready; }
         set
         {
-            if (value) state = State.Ready;
-            else state = State.OnGame;
+            if (value) 
+                state = State.Ready;
+            else 
+                state = State.OnGame;
         }
     }
 
@@ -42,12 +44,18 @@ public class StageManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        state = State.Ready;
+        initialized();
     }
 
     // Update is called once per frame
     void Update()
     {
 
+    }
+
+    //ステージの初期化
+    void initialized()
+    {
+        state = State.Ready;
     }
 }
