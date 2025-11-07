@@ -74,7 +74,11 @@ MonoBehaviour:
   m_MinSize: {x: 100, y: 200}
   m_MaxSize: {x: 8096, y: 16192}
   vertical: 1
+<<<<<<< HEAD
   controlID: 79
+=======
+  controlID: 82
+>>>>>>> parent of 1d7a57e (10/10)
 --- !u!114 &4
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -150,7 +154,11 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 200}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
+<<<<<<< HEAD
   controlID: 78
+=======
+  controlID: 17
+>>>>>>> parent of 1d7a57e (10/10)
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -196,7 +204,11 @@ MonoBehaviour:
   m_MinSize: {x: 100, y: 200}
   m_MaxSize: {x: 8096, y: 16192}
   vertical: 1
+<<<<<<< HEAD
   controlID: 101
+=======
+  controlID: 105
+>>>>>>> parent of 1d7a57e (10/10)
 --- !u!114 &9
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -333,9 +345,15 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
+<<<<<<< HEAD
       m_SelectedIDs: 26780000
       m_LastClickedID: 30758
       m_ExpandedIDs: c8e5ffff5ce6ffff3ae7ffff94e7ffffbaf0ffff04f1fffff6f7ffff96f9fffff6f9ffff2afbffffa45e0000ce5e0000ea5e0000347200003c7200006e720000fe7700001a78000048780000
+=======
+      m_SelectedIDs: 
+      m_LastClickedID: 0
+      m_ExpandedIDs: 0cfaffff2afbffff
+>>>>>>> parent of 1d7a57e (10/10)
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -458,7 +476,11 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: fe600000
     m_LastClickedID: 24830
+<<<<<<< HEAD
     m_ExpandedIDs: 00000000a05d0000a25d0000a45d0000a65d0000a85d0000aa5d0000ac5d0000ae5d0000b05d0000b25d0000b45d0000
+=======
+    m_ExpandedIDs: 00000000685d00006a5d00006c5d00006e5d0000705d0000725d0000745d0000765d0000
+>>>>>>> parent of 1d7a57e (10/10)
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -486,7 +508,11 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 284}
     m_SelectedIDs: 
     m_LastClickedID: 0
+<<<<<<< HEAD
     m_ExpandedIDs: ffffffff00000000a05d0000a25d0000a45d0000a65d0000a85d0000aa5d0000ac5d0000ae5d0000b05d0000b25d0000b45d0000
+=======
+    m_ExpandedIDs: ffffffff00000000685d00006c5d00006e5d0000705d0000725d0000745d0000765d0000
+>>>>>>> parent of 1d7a57e (10/10)
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
