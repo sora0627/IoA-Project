@@ -39,7 +39,7 @@ namespace System
         // Start is called before the first frame update
         void Start()
         {
-
+            Initialization();
         }
 
         // Update is called once per frame
@@ -51,6 +51,9 @@ namespace System
         void Initialization()
         {
             state = State.Ready;
+
+            Cards.CardManager.instance.SetDeck();
+            Cards.CardManager.instance.ShuffleDeck();
         }
     }
 }
