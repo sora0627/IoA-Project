@@ -11,7 +11,7 @@ namespace Player
         public List<CardData> hands;
 
         [SerializeField]
-        private GameObject parent;
+        private Transform parent;
 
         // Start is called before the first frame update
         void Start()
@@ -41,11 +41,12 @@ namespace Player
             }
         }
 
-        void SetCard()
+        public void SetCard()
         {
-            foreach (Transform child in parent.transform)
+            for (int i = 0; i < hands.Count; i++)
             {
-                 
+                GameObject card = Instantiate(hands[i].gameObject, new Vector2(-3 + 3 * i, -3), Quaternion.identity);
+                card.transform.parent = parent;
             }
         }
 

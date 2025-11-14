@@ -67,6 +67,7 @@ namespace System
             Cards.CardManager.instance.FirstDraw(Player.PlayerManager.instance.hands);
             Cards.CardManager.instance.FirstDraw(Enemy.EnemyManager.instance.hands);
 
+            Player.PlayerManager.instance.SetCard();
             SetTurn();
 
             state = State.OnGame;
