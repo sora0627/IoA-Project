@@ -45,7 +45,9 @@ namespace Player
         {
             for (int i = 0; i < hands.Count; i++)
             {
-                GameObject card = Instantiate(hands[i].gameObject, new Vector2(-3 + 3 * i, -3), Quaternion.identity);
+                GameObject card = Instantiate(hands[i].gameObject, new Vector2(-2 + 2 * i, -3), Quaternion.identity);
+                CardData cardData = card.GetComponent<CardData>();
+                cardData.coolTime = Random.Range(2, 4);
                 card.transform.parent = parent;
             }
         }
