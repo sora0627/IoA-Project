@@ -22,7 +22,7 @@ namespace Cards
         private Dictionary<string, int> InitialValue = new Dictionary<string, int>()
         {
             { "Normal", 10 },
-            { "Friend", 10 },
+            //{ "Friend", 10 },
             { "OldMan", 10 },
             { "Family", 10 },
         };
@@ -65,7 +65,6 @@ namespace Cards
 
         public void DrawCard(List<CardData> hand)
         {
-            deck[0].coolTime = UnityEngine.Random.Range(2, 4);
             hand.Add(deck[0]);
             deck.RemoveAt(0);
         }
