@@ -57,6 +57,19 @@ namespace Cards
             }
         }
 
+        public void FirstDraw(List<CardData> hand)
+        {
+            for (int i = 0; i < 3; i++)
+                DrawCard(hand);
+        }
+
+        public void DrawCard(List<CardData> hand)
+        {
+            deck[0].coolTime = UnityEngine.Random.Range(2, 4);
+            hand.Add(deck[0]);
+            deck.RemoveAt(0);
+        }
+
         public void ShuffleDeck()
         {
             deck = deck.OrderBy(a => Guid.NewGuid()).ToList();
