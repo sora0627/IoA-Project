@@ -47,7 +47,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CardName: Friend
-  coolTime: 2
+  CardID: 0
+  coolTime: 0
 --- !u!114 &7885480614734529711
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60,7 +61,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd04a79650050ad4dbdaa35e3e30cc6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  magnifiedScale: 0.4
 --- !u!61 &6889909726839125832
 BoxCollider2D:
   m_ObjectHideFlags: 0

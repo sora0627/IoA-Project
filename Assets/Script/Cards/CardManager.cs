@@ -19,6 +19,9 @@ namespace Cards
 
         public List<CardData> deck;
 
+        [SerializeField]
+        private Transform parent;
+
         private Dictionary<string, int> InitialValue = new Dictionary<string, int>()
         {
             { "Normal", 10 },
@@ -41,18 +44,23 @@ namespace Cards
 
         public void SetDeck()
         {
+            CardData cloneCard = null;
+
             foreach (KeyValuePair<string, int> card in InitialValue)
             {
                 for ( int value = 0; value < card.Value; value++)
                 {
                     if (card.Key == "Normal")
-                        deck.Add(NormalCard);
+                        cloneCard = Instantiate(NormalCard);
                     if (card.Key == "Friend")
-                        deck.Add(FriendCard);
+                        cloneCard = Instantiate(FriendCard);
                     if (card.Key == "OldMan")
-                        deck.Add(OldManCard);
+                        cloneCard = Instantiate(OldManCard);
                     if (card.Key == "Family")
-                        deck.Add(FamilyCard);                 
+                        cloneCard = Instantiate(FamilyCard);
+
+                    cloneCard.transform.parent = parent;
+                    deck.Add(cloneCard);
                 }
             }
         }

@@ -48,6 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CardName: Normal
+  CardID: 0
   coolTime: 0
 --- !u!114 &5065754955649004611
 MonoBehaviour:
@@ -61,7 +62,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd04a79650050ad4dbdaa35e3e30cc6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  magnifiedScale: 0.4
 --- !u!61 &2607558560163337496
 BoxCollider2D:
   m_ObjectHideFlags: 0
