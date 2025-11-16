@@ -30,7 +30,11 @@ namespace Player
         // Update is called once per frame
         void Update()
         {
-
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                CardManager.instance.DrawCard(hands);
+                SetCard();
+            }
         }
 
         public void SetCard()
