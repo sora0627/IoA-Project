@@ -50,7 +50,7 @@ namespace Player
         {
             Destroy(currentSelectCard);
             hands.RemoveAt(index);
-            FirstSetCard();
+            SetCard();
         }
     }
 }
