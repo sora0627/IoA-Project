@@ -1,36 +1,52 @@
+using Cards;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ImageScaler : MonoBehaviour
+namespace UI
 {
-    private static ImageScaler currentMagnifiedSprite = null;
-
-    private float magnifiedScale = 1.2f;
-    private Vector3 originalScale;
-
-    private void Awake()
+    public class ImageScaler : MonoBehaviour
     {
-        originalScale = transform.localScale;
-    }
+        private static ImageScaler currentMagnifiedSprite = null;
 
-    private void OnMouseDown()
-    {
-        Debug.Log("click");
-        if (currentMagnifiedSprite != null && currentMagnifiedSprite != this)
+        private float magnifiedScale = 1.2f;
+        private Vector3 originalScale;
+
+        private void Awake()
         {
-            currentMagnifiedSprite.ResetScale();
+            originalScale = transform.localScale;
         }
 
-        if (transform.localScale.x < magnifiedScale)
+        private void OnMouseDown()
         {
-            transform.localScale = originalScale * magnifiedScale;
-            currentMagnifiedSprite = this;
-        }
-    }
+            if (Player.PlayerManager.instance.SelectCard != gameObject)
+            {
+                Debug.Log("click");
+                if (currentMagnifiedSprite != null && currentMagnifiedSprite != this)
+                {
+                    currentMagnifiedSprite.ResetScale();
+                }
 
-    public void ResetScale()
-    {
-        transform.localScale = originalScale;
+                if (transform.localScale.x < magnifiedScale)
+                {
+                    transform.localScale = originalScale * magnifiedScale;
+                    currentMagnifiedSprite = this;
+                }
+
+                Player.PlayerManager.instance.SelectCard = gameObject;
+            }
+            else
+            {
+                List<CardData> cardDatas = Player.PlayerManager.instance.hands;
+                CardData cardData = gameObject.GetComponent<CardData>();
+                Debug.Log(cardDatas.IndexOf(cardData));
+                Player.PlayerManager.instance.UseHand(cardDatas.IndexOf(cardData));
+            }
+        }
+
+        public void ResetScale()
+        {
+            transform.localScale = originalScale;
+        }
     }
 }

@@ -22,22 +22,6 @@ namespace Enemy
 
         }
 
-        public void SelectCard()
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                GameObject clickedObject = null;
-
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit2D hit2d = Physics2D.Raycast((Vector2)ray.origin, (Vector2)ray.direction);
-
-                if (hit2d)
-                {
-                    clickedObject = hit2d.transform.gameObject;
-                }
-            }
-        }
-
         public void UseHand(int index)
         {
             hands.RemoveAt(index);

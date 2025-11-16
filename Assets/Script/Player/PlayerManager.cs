@@ -13,6 +13,14 @@ namespace Player
         [SerializeField]
         private Transform parent;
 
+        private GameObject currentSelectCard;
+
+        public GameObject SelectCard
+        {
+            get { return currentSelectCard; }
+            set { currentSelectCard = value; }
+        }
+
         // Start is called before the first frame update
         void Start()
         {
@@ -25,28 +33,14 @@ namespace Player
 
         }
 
-        public void SelectCard()
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                GameObject clickedObject = null;
-
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit2D hit2d = Physics2D.Raycast((Vector2)ray.origin, (Vector2)ray.direction);
-
-                if (hit2d)
-                {
-                    clickedObject = hit2d.transform.gameObject;
-                }
-            }
-        }
-
         public void SetCard()
         {
-            for (int i = 0; i < hands.Count; i++)
+            for (int index = 0; index < hands.Count; index++)
             {
-                GameObject card = Instantiate(hands[i].gameObject, new Vector2(-2 + 2 * i, -3), Quaternion.identity);
-                CardData cardData = card.GetComponent<CardData>();
+                int posX = 2, posY = -3;
+                CardData cardData = hands[index];
+                GameObject card = cardData.gameObject;
+                card.transform.position = new Vector2(-posX + posX * index, posY);
                 cardData.coolTime = Random.Range(2, 4);
                 card.transform.parent = parent;
             }
@@ -54,7 +48,9 @@ namespace Player
 
         public void UseHand(int index)
         {
+            Destroy(currentSelectCard);
             hands.RemoveAt(index);
+            FirstSetCard();
         }
     }
 }
