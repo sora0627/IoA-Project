@@ -45,7 +45,7 @@ namespace Player
                 CardData cardData = hands[index];
                 GameObject card = cardData.gameObject;
                 card.transform.position = new Vector2(-posX + posX * index, posY);
-                cardData.coolTime = Random.Range(2, 4);
+                cardData.coolTime = Random.Range(2, 5);
                 card.transform.parent = parent;
             }
         }
