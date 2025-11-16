@@ -75,8 +75,9 @@ namespace System
 
         void SetTurn()
         {
-            int rand = UnityEngine.Random.Range(0, 1);
+            int rand = UnityEngine.Random.Range(0, 2);
             isPlayerTurn = (rand == 0) ? true : false;
+            Debug.Log((isPlayerTurn) ? ("æs") : ("ŒãU"));
         }
     }
 }
