@@ -37,6 +37,8 @@ namespace UI
             }
             else
             {
+                if (!System.GameManager.instance.IsSelectCard) return;
+
                 List<CardData> cardDatas = Player.PlayerManager.instance.hands;
                 CardData cardData = gameObject.GetComponent<CardData>();
                 Debug.Log(cardDatas.IndexOf(cardData));

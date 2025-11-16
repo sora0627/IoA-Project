@@ -4,12 +4,14 @@ using UnityEngine;
 
 namespace System
 {
-    public class GameManager : MonoBehaviour
+    public class GameManager : Singleton<GameManager>
     {
         enum State
         {
             Ready,
             OnGame,
+            SelectCard,
+            SelectToilet,
             Pause,
             GameEnd,
         }
@@ -26,6 +28,16 @@ namespace System
         public bool IsOnGame
         {
             get { return state == State.OnGame; }
+        }
+
+        public bool IsSelectCard
+        {
+            get { return state == State.SelectCard; }
+        }
+
+        public bool IsSelectToilet
+        {
+            get { return state == State.SelectToilet; }
         }
 
         public bool IsPause
