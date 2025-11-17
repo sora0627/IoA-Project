@@ -48,7 +48,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CardName: Normal
-  CardID: 0
   coolTime: 0
 --- !u!114 &5065754955649004611
 MonoBehaviour:

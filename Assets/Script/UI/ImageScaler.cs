@@ -9,7 +9,7 @@ namespace UI
     {
         private static ImageScaler currentMagnifiedSprite = null;
 
-        private float magnifiedScale = 1.2f;
+        private float magnifiedScale = 1.3f;
         private Vector3 originalScale;
 
         private void Awake()
@@ -47,6 +47,17 @@ namespace UI
         public void ResetScale()
         {
             transform.localScale = originalScale;
+
+            if (currentMagnifiedSprite == this)
+            {
+                currentMagnifiedSprite = null;
+            }
+        }
+
+        public static void ResetAllCards()
+        {
+            if (currentMagnifiedSprite != null)
+                currentMagnifiedSprite.ResetScale();
         }
     }
 }

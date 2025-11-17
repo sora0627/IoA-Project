@@ -47,7 +47,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CardName: Friend
-  CardID: 0
   coolTime: 0
 --- !u!114 &7885480614734529711
 MonoBehaviour:

@@ -13,6 +13,9 @@ namespace Player
         [SerializeField]
         private Transform parent;
 
+        [SerializeField]
+        private List<Transform> HandPos;
+
         private GameObject currentSelectCard;
 
         public GameObject SelectCard
@@ -41,10 +44,9 @@ namespace Player
         {
             for (int index = 0; index < hands.Count; index++)
             {
-                int posX = 2, posY = -3;
                 CardData cardData = hands[index];
                 GameObject card = cardData.gameObject;
-                card.transform.position = new Vector2(-posX + posX * index, posY);
+                card.transform.position = HandPos[index].position;
                 cardData.coolTime = Random.Range(2, 5);
                 card.transform.parent = parent;
             }
