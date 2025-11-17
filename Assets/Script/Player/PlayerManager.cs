@@ -1,6 +1,7 @@
 using Cards;
 using System.Collections;
 using System.Collections.Generic;
+using Systems;
 using UnityEngine;
 
 namespace Player
@@ -17,6 +18,7 @@ namespace Player
         private List<Transform> HandPos;
 
         private GameObject currentSelectCard;
+        private bool isDraw = false;
 
         public GameObject SelectCard
         {
@@ -33,10 +35,21 @@ namespace Player
         // Update is called once per frame
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (!GameManager.instance.IsPlayerTurn) return;
+
+            if (GameManager.instance.IsSelect)
             {
-                CardManager.instance.DrawCard(hands);
-                SetCard();
+                if (!isDraw)
+                {
+                    isDraw = true;
+                    CardManager.instance.DrawCard(hands);
+                    SetCard();
+                }
+            }
+
+            if (GameManager.instance.IsSet)
+            {
+                parent.gameObject.SetActive(false);
             }
         }
 
@@ -57,6 +70,16 @@ namespace Player
             Destroy(currentSelectCard);
             hands.RemoveAt(index);
             SetCard();
+            GameManager.instance.IsSet = true;
+        }
+
+        void TurnEnd()
+        {
+            parent.gameObject.SetActive(true);
+            Debug.Log("EnemyTurn");
+            GameManager.instance.IsSelect = true;
+            GameManager.instance.IsPlayerTurn = false;
+            isDraw = false;
         }
     }
 }
