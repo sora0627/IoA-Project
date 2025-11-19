@@ -31,12 +31,24 @@ namespace Enemy
                     isDraw = true;
                     CardManager.instance.DrawCard(hands);
                 }
+
+                int index = SelectCard();
+                UseHand(index);
             }
 
             if (GameManager.instance.IsSet)
             {
-
+                if (Input.GetKeyDown(KeyCode.N))
+                {
+                    TurnEnd();
+                }
             }
+        }
+
+        //‚±‚±‚ÉCPU‚ÌƒvƒƒOƒ‰ƒ€‚ğ‚©‚­
+        int SelectCard()
+        {
+            return 1;
         }
 
         public void UseHand(int index)
@@ -47,9 +59,7 @@ namespace Enemy
 
         void TurnEnd()
         {
-            Debug.Log("PlayerTurn");
-            GameManager.instance.IsSelect = true;
-            GameManager.instance.IsPlayerTurn = true;
+            GameManager.instance.TurnChange();
             isDraw = false;
         }
     }
