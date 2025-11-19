@@ -69,7 +69,7 @@ namespace Systems
         {
             if (IsOnGame)
             {
-                
+                IsSelect = true;
             }
 
             if (IsGameEnd)
@@ -98,6 +98,13 @@ namespace Systems
             int rand = Random.Range(0, 2);
             isPlayerTurn = (rand == 0) ? true : false;
             Debug.Log((isPlayerTurn) ? ("êÊçs") : ("å„çU"));
+        }
+
+        public void TurnChange()
+        {
+            IsPlayerTurn = !IsPlayerTurn;
+            Debug.Log((isPlayerTurn) ? ("PlayerTurn") : ("EnemyTurn"));
+            IsSelect = true;
         }
     }
 }

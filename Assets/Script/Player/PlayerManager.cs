@@ -49,7 +49,10 @@ namespace Player
 
             if (GameManager.instance.IsSet)
             {
-                parent.gameObject.SetActive(false);
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    TurnEnd();
+                }
             }
         }
 
@@ -75,10 +78,7 @@ namespace Player
 
         void TurnEnd()
         {
-            parent.gameObject.SetActive(true);
-            Debug.Log("EnemyTurn");
-            GameManager.instance.IsSelect = true;
-            GameManager.instance.IsPlayerTurn = false;
+            GameManager.instance.TurnChange();
             isDraw = false;
         }
     }
