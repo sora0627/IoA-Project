@@ -2,14 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace System
+namespace Systems
 {
-    public class GameManager : MonoBehaviour
+    public class GameManager : Singleton<GameManager>
     {
         enum State
         {
             Ready,
             OnGame,
+            Select,
+            Set,
             Pause,
             GameEnd,
         }
@@ -28,6 +30,18 @@ namespace System
             get { return state == State.OnGame; }
         }
 
+        public bool IsSelect
+        {
+            get { return state == State.Select; }
+            set { if (value) state = State.Select; }
+        }
+
+        public bool IsSet
+        {
+            get { return state == State.Set; }
+            set { if (value) state = State.Set; }
+        }
+
         public bool IsPause
         {
             get { return state == State.Pause; }
@@ -36,6 +50,12 @@ namespace System
         public bool IsGameEnd
         {
             get { return state == State.GameEnd; }
+        }
+
+        public bool IsPlayerTurn
+        {
+            get { return isPlayerTurn; }
+            set { isPlayerTurn = value; }
         }
 
         // Start is called before the first frame update
@@ -49,7 +69,7 @@ namespace System
         {
             if (IsOnGame)
             {
-                
+                IsSelect = true;
             }
 
             if (IsGameEnd)
@@ -67,15 +87,24 @@ namespace System
             Cards.CardManager.instance.FirstDraw(Player.PlayerManager.instance.hands);
             Cards.CardManager.instance.FirstDraw(Enemy.EnemyManager.instance.hands);
 
-            SetTurn();
+            Player.PlayerManager.instance.SetCard();
+            StartSetTurn();
 
             state = State.OnGame;
         }
 
-        void SetTurn()
+        void StartSetTurn()
         {
-            int rand = UnityEngine.Random.Range(0, 1);
+            int rand = Random.Range(0, 2);
             isPlayerTurn = (rand == 0) ? true : false;
+            Debug.Log((isPlayerTurn) ? ("êÊçs") : ("å„çU"));
+        }
+
+        public void TurnChange()
+        {
+            IsPlayerTurn = !IsPlayerTurn;
+            Debug.Log((isPlayerTurn) ? ("PlayerTurn") : ("EnemyTurn"));
+            IsSelect = true;
         }
     }
 }

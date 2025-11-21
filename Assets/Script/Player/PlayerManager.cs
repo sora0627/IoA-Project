@@ -1,6 +1,7 @@
 using Cards;
 using System.Collections;
 using System.Collections.Generic;
+using Systems;
 using UnityEngine;
 
 namespace Player
@@ -11,7 +12,19 @@ namespace Player
         public List<CardData> hands;
 
         [SerializeField]
-        private GameObject parent;
+        private Transform parent;
+
+        [SerializeField]
+        private List<Transform> HandPos;
+
+        private GameObject currentSelectCard;
+        private bool isDraw = false;
+
+        public GameObject SelectCard
+        {
+            get { return currentSelectCard; }
+            set { currentSelectCard = value; }
+        }
 
         // Start is called before the first frame update
         void Start()
@@ -22,36 +35,51 @@ namespace Player
         // Update is called once per frame
         void Update()
         {
+            if (!GameManager.instance.IsPlayerTurn) return;
 
-        }
-
-        public void SelectCard()
-        {
-            if (Input.GetMouseButtonDown(0))
+            if (GameManager.instance.IsSelect)
             {
-                GameObject clickedObject = null;
-
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit2D hit2d = Physics2D.Raycast((Vector2)ray.origin, (Vector2)ray.direction);
-
-                if (hit2d)
+                if (!isDraw)
                 {
-                    clickedObject = hit2d.transform.gameObject;
+                    isDraw = true;
+                    CardManager.instance.DrawCard(hands);
+                    SetCard();
+                }
+            }
+
+            if (GameManager.instance.IsSet)
+            {
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    TurnEnd();
                 }
             }
         }
 
-        void SetCard()
+        public void SetCard()
         {
-            foreach (Transform child in parent.transform)
+            for (int index = 0; index < hands.Count; index++)
             {
-                 
+                CardData cardData = hands[index];
+                GameObject card = cardData.gameObject;
+                card.transform.position = HandPos[index].position;
+                cardData.coolTime = Random.Range(2, 5);
+                card.transform.parent = parent;
             }
         }
 
         public void UseHand(int index)
         {
+            Destroy(currentSelectCard);
             hands.RemoveAt(index);
+            SetCard();
+            GameManager.instance.IsSet = true;
+        }
+
+        void TurnEnd()
+        {
+            GameManager.instance.TurnChange();
+            isDraw = false;
         }
     }
 }
