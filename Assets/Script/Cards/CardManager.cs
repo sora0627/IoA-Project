@@ -17,12 +17,6 @@ namespace Cards
         [SerializeField]
         private CardData FamilyCard;
 
-        [SerializeField]
-        private GameObject Human;
-
-        [SerializeField]
-        private Transform GenerationPos;
-
         public List<CardData> deck;
 
         [SerializeField]
@@ -86,32 +80,6 @@ namespace Cards
         public void ShuffleDeck()
         {
             deck = deck.OrderBy(a => Guid.NewGuid()).ToList();
-        }
-
-        public void CharacterGeneration(CardData SelectCard)
-        {
-            string cardName = SelectCard.CardName;
-            GameObject cloneObject = null;
-            
-            if (cardName.Equals("Normal"))
-            {
-                cloneObject = Instantiate(Human, GenerationPos.position, Quaternion.identity);
-            }
-
-            if (cardName.Equals("Friend"))
-            {
-
-            }
-
-            if (cardName.Equals("OldMan"))
-            {
-
-            }
-
-            if (cardName.Equals("Family"))
-            {
-
-            }
         }
     }
 }

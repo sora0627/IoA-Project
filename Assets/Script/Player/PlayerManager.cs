@@ -58,7 +58,7 @@ namespace Player
                 {
                     isGeneration = true;
                     CardData cardData = SelectCard.GetComponent<CardData>();
-                    CardManager.instance.CharacterGeneration(cardData);
+                    //Stage.StageManager.instance.CharacterGeneration(cardData);
                 }
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
