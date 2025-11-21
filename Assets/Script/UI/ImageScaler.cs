@@ -1,6 +1,7 @@
 using Cards;
 using System.Collections;
 using System.Collections.Generic;
+using Systems;
 using UnityEngine;
 
 namespace UI
@@ -37,6 +38,8 @@ namespace UI
             }
             else
             {
+                if (!GameManager.instance.IsPlayerTurn) return;
+
                 List<CardData> cardDatas = Player.PlayerManager.instance.hands;
                 CardData cardData = gameObject.GetComponent<CardData>();
                 Debug.Log(cardDatas.IndexOf(cardData));

@@ -67,7 +67,7 @@ namespace Cards
 
         public void FirstDraw(List<CardData> hand)
         {
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 2; i++)
                 DrawCard(hand);
         }
 
