@@ -19,6 +19,7 @@ namespace Player
 
         private GameObject currentSelectCard;
         private bool isDraw = false;
+        private bool isGeneration = false;
 
         public GameObject SelectCard
         {
@@ -39,6 +40,8 @@ namespace Player
 
             if (GameManager.instance.IsSelect)
             {
+                parent.gameObject.SetActive(true);
+
                 if (!isDraw)
                 {
                     isDraw = true;
@@ -49,6 +52,14 @@ namespace Player
 
             if (GameManager.instance.IsSet)
             {
+                parent.gameObject.SetActive(false);
+
+                if (!isGeneration)
+                {
+                    isGeneration = true;
+                    CardData cardData = SelectCard.GetComponent<CardData>();
+                    CardManager.instance.CharacterGeneration(cardData);
+                }
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
                     TurnEnd();
@@ -80,6 +91,7 @@ namespace Player
         {
             GameManager.instance.TurnChange();
             isDraw = false;
+            isGeneration = false;
         }
     }
 }
