@@ -35,7 +35,8 @@ namespace Stage
 
             if (cardName.Equals("Normal"))
             {
-                //cloneObject = Instantiate(Human, GenerationPos.position, Quaternion.identity);
+                cloneObject = Instantiate(Human, GenerationPos.position, Quaternion.identity);
+                cloneObject.transform.parent = parent;
             }
 
             if (cardName.Equals("Friend"))
@@ -52,8 +53,6 @@ namespace Stage
             {
 
             }
-
-            cloneObject.transform.parent = parent;
         }
     }
 }
