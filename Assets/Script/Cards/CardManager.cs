@@ -25,7 +25,7 @@ namespace Cards
         private Dictionary<string, int> InitialValue = new Dictionary<string, int>()
         {
             { "Normal", 10 },
-            //{ "Friend", 10 },
+            { "Friend", 10 },
             { "OldMan", 10 },
             { "Family", 10 },
         };
@@ -67,7 +67,7 @@ namespace Cards
 
         public void FirstDraw(List<CardData> hand)
         {
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 2; i++)
                 DrawCard(hand);
         }
 
