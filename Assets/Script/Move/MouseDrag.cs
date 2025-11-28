@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class MouseDrag : MonoBehaviour
 {
-    private Vector3 screenPoint;
-    private Vector3 offset;
+    private Vector3 dragOffset;
+    private float zPosition;
 
     // Start is called before the first frame update
     void Start()
@@ -21,13 +21,28 @@ public class MouseDrag : MonoBehaviour
 
     private void OnMouseDown()
     {
-        screenPoint = Camera.main.WorldToScreenPoint(transform.position);
-        offset = transform.position - Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        zPosition = transform.position.z;
+
+        dragOffset = transform.position - GetMouseWorldPosition();
+        Debug.Log(gameObject.name + "をクリック ");
     }
 
     private void OnMouseDrag()
     {
-        Vector3 currentScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
-        transform.position = Camera.main.ScreenToWorldPoint(currentScreenPoint);
+        Vector3 newPosition = GetMouseWorldPosition() + dragOffset;
+        newPosition.z = zPosition;
+        transform.position = newPosition;
+    }
+
+    private void OnMouseUp()
+    {
+        Debug.Log(gameObject.name + "のドラッグ終了");
+    }
+
+    private Vector3 GetMouseWorldPosition()
+    {
+        Vector3 mousePoint = Input.mousePosition;
+        mousePoint.z = Camera.main.nearClipPlane + 10f;
+        return Camera.main.ScreenToWorldPoint(mousePoint);
     }
 }
