@@ -156,3 +156,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6e4ac69a66df2748a9859f7d8feef33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dropTargetsRootName: ToiletPos
+  dropDistanceThreshold: 1
