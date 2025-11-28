@@ -21,16 +21,12 @@ namespace Player
         private bool isDraw = false;
         private bool isGeneration = false;
 
+        public bool isSet = false;
+
         public GameObject SelectCard
         {
             get { return currentSelectCard; }
             set { currentSelectCard = value; }
-        }
-
-        // Start is called before the first frame update
-        void Start()
-        {
-
         }
 
         // Update is called once per frame
@@ -44,6 +40,7 @@ namespace Player
 
                 if (!isDraw)
                 {
+                    isSet = false;
                     isDraw = true;
                     CardManager.instance.DrawCard(hands);
                     SetCard();
@@ -60,7 +57,7 @@ namespace Player
                     CardData cardData = SelectCard.GetComponent<CardData>();
                     Stage.StageManager.instance.CharacterGeneration(cardData);
                 }
-                if (Input.GetKeyDown(KeyCode.Space))
+                if (!isSet)
                 {
                     TurnEnd();
                 }
