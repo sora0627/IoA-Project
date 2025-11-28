@@ -11,6 +11,8 @@ public class ToiletHighlight : MonoBehaviour
     private readonly Color activeColor = new Color(0f, 1f, 0f, 0.7f);
     private readonly Color approachColor = new Color(1f, 1f, 0f, 0.7f);
 
+    public bool IsOccupied { get; private set; } = false;
+
     private void Awake()
     {
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
@@ -31,6 +33,12 @@ public class ToiletHighlight : MonoBehaviour
     {
         if (spriteRenderer == null) return;
 
+        if (IsOccupied)
+        {
+            spriteRenderer.color = defaultColor;
+            return;
+        }
+
         switch (state)
         {
             case 0:
@@ -43,5 +51,14 @@ public class ToiletHighlight : MonoBehaviour
                 spriteRenderer.color = approachColor;
                 break;
         }
+    }
+
+    /// <summary>
+    /// êËóLèÛë‘Ç…Ç∑ÇÈ
+    /// </summary>
+    public void Occupy()
+    {
+        IsOccupied = true;
+        Highlight(0);
     }
 }
