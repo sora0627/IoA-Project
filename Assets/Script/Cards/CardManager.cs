@@ -73,8 +73,11 @@ namespace Cards
 
         public void DrawCard(List<CardData> hand)
         {
-            hand.Add(deck[0]);
-            deck.RemoveAt(0);
+            if (deck.Count > 0)
+            {
+                hand.Add(deck[0]);
+                deck.RemoveAt(0);
+            }
         }
 
         public void ShuffleDeck()
