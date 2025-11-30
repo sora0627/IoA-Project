@@ -41,6 +41,18 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: BackGround
+    uniqueID: 3881182817
+    locked: 0
   - name: Stage
     uniqueID: 2823698293
+    locked: 0
+  - name: Card
+    uniqueID: 2696615825
+    locked: 0
+  - name: Human
+    uniqueID: 1121694029
+    locked: 0
+  - name: UI
+    uniqueID: 1409302059
     locked: 0
