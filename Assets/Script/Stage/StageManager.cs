@@ -7,8 +7,10 @@ namespace Stage
 {
     public class StageManager : Singleton<StageManager>
     {
-        [SerializeField]
-        private GameObject Human;
+
+        [Header("人のプレハブ")]
+        [SerializeField] private GameObject Normal;
+        [SerializeField] private GameObject OldMan;
 
         [SerializeField]
         private Transform GenerationPos;
@@ -42,7 +44,7 @@ namespace Stage
 
             if (cardName.Equals("Normal"))
             {
-                cloneObject = Instantiate(Human, GenerationPos.position, Quaternion.identity);
+                cloneObject = Instantiate(Normal, GenerationPos.position, Quaternion.identity);
                 cloneObject.transform.parent = parent;
             }
 
@@ -53,7 +55,8 @@ namespace Stage
 
             if (cardName.Equals("OldMan"))
             {
-
+                cloneObject = Instantiate(OldMan, GenerationPos.position, Quaternion.identity);
+                cloneObject.transform.parent = parent;
             }
 
             if (cardName.Equals("Family"))
