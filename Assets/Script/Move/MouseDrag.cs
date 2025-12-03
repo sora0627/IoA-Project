@@ -13,12 +13,21 @@ namespace Move
         [Tooltip("ドロップターゲットからの許容誤差")]
         public float dropDistanceThreshold = 1.0f;
 
-        private List<Transform> dropTargets;
+        [Header("ゲームルール設定")]
+        [Tooltip("チェックを入れると、すでに置かれている場所の『両隣』には置けなくなります")]
+        public bool enableNeighborRestriction = true;
+
+        [Header("UI設定")]
+        [Tooltip("ゲームオーバー時に表示するUI（PanelやTextなど）")]
+        public GameObject gameOverUI;
+
+        // 内部変数
+        private List<ToiletHighlight> targetHighlights = new List<ToiletHighlight>();
         private Vector3 initialPosition;
         private Vector3 dragOffset;
         private float zPosition;
-
         private new Collider2D collider2D = null;
+        private bool isGameOver = false; // ゲームオーバー状態管理フラグ
 
         private void Awake()
         {
@@ -27,160 +36,183 @@ namespace Move
 
             if (root != null)
             {
-                List<Transform> children = new List<Transform>();
-
                 foreach (Transform child in root.transform)
                 {
-                    children.Add(child);
+                    ToiletHighlight hl = child.GetComponent<ToiletHighlight>();
+                    if (hl != null)
+                    {
+                        targetHighlights.Add(hl);
+                    }
                 }
-
-                dropTargets = children.ToList();
-
-                Debug.Log($"ターゲット成功:{dropTargets.Count}");
             }
             else
             {
-                Debug.Log($"{dropTargetsRootName}が見つかりません");
-                dropTargets = new List<Transform>();
+                Debug.LogError($"{dropTargetsRootName} が見つかりません");
             }
 
             initialPosition = transform.position;
-        }
 
-        /// <summary>
-        /// 隣にオブジェクトがあるかチェックする
-        /// </summary>
-        /// <param name="targetIndex"></param>
-        /// <returns></returns>
-        private bool IsTargetReserved(int targetIndex)
-        {
-            if (targetIndex > 0)
+            // ゲーム開始時はUIを隠しておく
+            if (gameOverUI != null)
             {
-                ToiletHighlight leftNeighbor = dropTargets[targetIndex - 1].GetComponent<ToiletHighlight>();
-                if (leftNeighbor != null && leftNeighbor.IsOccupied)
-                {
-                    return true;
-                }
+                gameOverUI.SetActive(false);
             }
-
-            if (targetIndex < dropTargets.Count - 1)
-            {
-                ToiletHighlight rightNeighbor = dropTargets[targetIndex + 1].GetComponent<ToiletHighlight>();
-                if (rightNeighbor != null && rightNeighbor.IsOccupied)
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         private void OnMouseDown()
         {
-            initialPosition = transform.position;
+            if (isGameOver) return;
 
+            initialPosition = transform.position;
             zPosition = transform.position.z;
             dragOffset = transform.position - GetMouseWorldPosition();
-
-            Debug.Log(gameObject.name + "をクリック ");
         }
 
         private void OnMouseDrag()
         {
+            if (isGameOver) return;
+
             Vector3 newPosition = GetMouseWorldPosition() + dragOffset;
             newPosition.z = zPosition;
             transform.position = newPosition;
-            int index = -1;
 
-            foreach (Transform target in dropTargets)
+            // ドラッグ中のハイライト更新
+            for (int i = 0; i < targetHighlights.Count; i++)
             {
-                index++;
-                ToiletHighlight targetHighlight = target.GetComponent<ToiletHighlight>();
+                ToiletHighlight target = targetHighlights[i];
 
-                if (targetHighlight != null)
+                // 埋まっている、またはルール上置けない場所は無視
+                if (target.IsOccupied || IsTargetReserved(i))
                 {
-                    if (targetHighlight.IsOccupied)
-                    {
-                        continue;
-                    }
+                    target.Highlight(0);
+                    continue;
+                }
 
-                    if (IsTargetReserved(index))
-                    {
-                        targetHighlight.Highlight(0); // 念のため薄いグレーを強制
-                        continue;
-                    }
+                float distance = Vector3.Distance(transform.position, target.transform.position);
 
-                    float distance = Vector3.Distance(transform.position, target.position);
-
-                    if (distance <= dropDistanceThreshold)
-                    {
-                        targetHighlight.Highlight(2);
-                    }
-                    else
-                    {
-                        targetHighlight.Highlight(1);
-                    }
+                if (distance <= dropDistanceThreshold)
+                {
+                    target.Highlight(2);
+                }
+                else
+                {
+                    target.Highlight(1);
                 }
             }
         }
 
-        /// <summary>
-        /// ドラッグ終了
-        /// </summary>
         private void OnMouseUp()
         {
-            Transform successTarget = null;
-            int index = -1;
+            if (isGameOver) return;
 
-            foreach (Transform target in dropTargets)
+            ToiletHighlight successTarget = null;
+            float minDistance = float.MaxValue;
+
+            // ドロップ可能なターゲットを探す
+            for (int i = 0; i < targetHighlights.Count; i++)
             {
-                index++;
-                ToiletHighlight targetHighlight = target.GetComponent<ToiletHighlight>();
-                if (targetHighlight != null && (targetHighlight.IsOccupied || IsTargetReserved(index)))
+                ToiletHighlight target = targetHighlights[i];
+                target.Highlight(0); // 色をリセット
+
+                // 置けない場所（占有済み or 隣接ルール違反）はスキップ
+                if (target.IsOccupied || IsTargetReserved(i))
                 {
                     continue;
                 }
 
-                float distance = Vector3.Distance(transform.position, target.position);
+                float distance = Vector3.Distance(transform.position, target.transform.position);
 
-                if (targetHighlight != null)
+                if (distance <= dropDistanceThreshold && distance < minDistance)
                 {
-                    targetHighlight.Highlight(0);
-                }
-
-                if (distance <= dropDistanceThreshold)
-                {
+                    minDistance = distance;
                     successTarget = target;
-                    break;
                 }
-
             }
 
             if (successTarget != null)
             {
-                Debug.Log("成功");
+                // --- ドロップ成功時の処理 ---
+                Debug.Log("ドロップ成功");
+                successTarget.Occupy();
 
-                successTarget.GetComponent<ToiletHighlight>()?.Occupy();
-                Player.PlayerManager.instance.isSet = true;
-                transform.position = successTarget.position;
+                if (Player.PlayerManager.instance != null)
+                {
+                    Player.PlayerManager.instance.isSet = true;
+                }
 
-                collider2D.enabled = false;
+                transform.position = successTarget.transform.position;
+                if (collider2D != null) collider2D.enabled = false;
+
+                // ★手詰まりチェック: 配置後に「もう置ける場所が残っていないか」を確認
+                CheckIfAnySpotsAvailable();
             }
             else
             {
-                Debug.Log("失敗");
-
+                // --- 失敗時の処理 ---
+                // お手付きはゲームオーバーにせず、元の位置に戻すだけ
+                Debug.Log("失敗：置けない場所です");
                 transform.position = initialPosition;
             }
+        }
 
-            foreach (Transform target in dropTargets)
+        /// <summary>
+        /// 盤面にまだ置ける場所が残っているかチェックし、なければゲームオーバーにする
+        /// </summary>
+        private void CheckIfAnySpotsAvailable()
+        {
+            bool hasAvailableSpot = false;
+
+            for (int i = 0; i < targetHighlights.Count; i++)
             {
-                ToiletHighlight targetHighlight = target.GetComponent<ToiletHighlight>();
-                if (targetHighlight != null)
+                // 「空いている」かつ「隣接ルール的にもOK」な場所があるか？
+                if (!targetHighlights[i].IsOccupied && !IsTargetReserved(i))
                 {
-                    targetHighlight.Highlight(0);
+                    hasAvailableSpot = true;
+                    break; // 1つでもあればまだゲーム続行可能
                 }
             }
+
+            if (!hasAvailableSpot)
+            {
+                // 置ける場所が一つもない＝手詰まり
+                Debug.Log("手詰まりです。置ける場所がありません。");
+                TriggerGameOver("置ける場所がなくなりました");
+            }
+        }
+
+        /// <summary>
+        /// ゲームオーバー処理
+        /// </summary>
+        private void TriggerGameOver(string reason)
+        {
+            Debug.Log($"Game Over: {reason}");
+
+            isGameOver = true;
+
+            if (gameOverUI != null)
+            {
+                gameOverUI.SetActive(true);
+            }
+        }
+
+        /// <summary>
+        /// 隣接ルールなどのチェック
+        /// </summary>
+        private bool IsTargetReserved(int targetIndex)
+        {
+            if (!enableNeighborRestriction) return false;
+
+            if (targetIndex > 0)
+            {
+                if (targetHighlights[targetIndex - 1].IsOccupied) return true;
+            }
+
+            if (targetIndex < targetHighlights.Count - 1)
+            {
+                if (targetHighlights[targetIndex + 1].IsOccupied) return true;
+            }
+
+            return false;
         }
 
         private Vector3 GetMouseWorldPosition()
