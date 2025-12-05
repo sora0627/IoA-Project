@@ -13,7 +13,6 @@ namespace Player
 
         [SerializeField] private Transform parent;
         [SerializeField] private List<Transform> HandPos;
-        [SerializeField] private List<bool> handRestrictions = new List<bool>();
 
         private GameObject currentSelectCard;
         private bool isDraw = false;
@@ -86,13 +85,7 @@ namespace Player
             CardManager.instance.DrawCard(hands);
             SetCard();
 
-            handRestrictions.Clear();
-            foreach (CardData card in hands)
-            {
-                handRestrictions.Add(card.IsRestrictedType);
-            }
-
-            Move.MouseDrag.CheckGameOverAtStartOfTurn("Toilet", true, handRestrictions);
+            Move.MouseDrag.CheckGameOverAtStartOfTurn(true, hands);
         }
 
         void TurnEnd()
