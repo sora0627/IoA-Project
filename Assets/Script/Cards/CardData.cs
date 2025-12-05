@@ -8,6 +8,9 @@ namespace Cards
     public class CardData : MonoBehaviour
     {
         public string CardName;
+        public bool IsRestrictedType;
         public int coolTime;
+
+        //public Move.CardType Type;
     }
 }
