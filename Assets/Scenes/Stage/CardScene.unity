@@ -435,7 +435,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &710635354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -449,7 +449,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   countdown: 10
-  countdownText: {fileID: 1434528244}
+  countdownText: {fileID: 0}
 --- !u!4 &710635355
 Transform:
   m_ObjectHideFlags: 0
@@ -549,7 +549,6 @@ MonoBehaviour:
   - {fileID: 899345241}
   - {fileID: 1497235739}
   - {fileID: 82998217}
-  handRestrictions: 
   isSet: 0
 --- !u!1 &899345240
 GameObject:
@@ -1126,6 +1125,7 @@ MonoBehaviour:
   toiletParent: {fileID: 887061881}
   toiletCount: 11
   spacing: 1.5
+  toilet: []
 --- !u!1 &1820803914
 GameObject:
   m_ObjectHideFlags: 0

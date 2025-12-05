@@ -48,6 +48,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dropTargetsRootName: ToiletPos
   dropDistanceThreshold: 1
+  cardType: 1
+  partnerCard: {fileID: 0}
+  isFamilyParent: 0
   canIgnoreNeighborRestriction: 0
   enableNeighborRestriction: 1
 --- !u!61 &-742850233456853638
@@ -175,5 +178,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dropTargetsRootName: ToiletPos
   dropDistanceThreshold: 1
+  cardType: 0
+  partnerCard: {fileID: 0}
+  isFamilyParent: 0
   canIgnoreNeighborRestriction: 0
   enableNeighborRestriction: 1
