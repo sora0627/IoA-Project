@@ -50,6 +50,7 @@ MonoBehaviour:
   CardName: OldMan
   IsRestrictedType: 0
   coolTime: 0
+  Type: 2
 --- !u!114 &8239425662469259388
 MonoBehaviour:
   m_ObjectHideFlags: 0

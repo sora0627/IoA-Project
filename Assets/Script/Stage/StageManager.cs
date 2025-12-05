@@ -25,6 +25,8 @@ namespace Stage
 
         [SerializeField] private float spacing = 1.5f;
 
+        public List<GameObject> toilet = new List<GameObject>();
+
         // Start is called before the first frame update
         void Start()
         {
@@ -76,6 +78,7 @@ namespace Stage
                 float x = startX + (i * spacing);
 
                 obj.transform.localPosition = new Vector3(x, 0, 0);
+                toilet.Add(obj);
             }
         }
     }

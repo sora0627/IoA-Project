@@ -132,8 +132,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CardName: Family
-  IsRestrictedType: 1
   coolTime: 0
+  Type: 0
 --- !u!114 &-4712850129966234705
 MonoBehaviour:
   m_ObjectHideFlags: 0
