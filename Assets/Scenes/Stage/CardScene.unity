@@ -329,7 +329,7 @@ GameObject:
   - component: {fileID: 887061881}
   m_Layer: 6
   m_Name: ToiletPos
-  m_TagString: Untagged
+  m_TagString: Toilet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -401,6 +401,7 @@ MonoBehaviour:
   - {fileID: 899345241}
   - {fileID: 1497235739}
   - {fileID: 82998217}
+  handRestrictions: 
   isSet: 0
 --- !u!1 &899345240
 GameObject:

@@ -48,6 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CardName: OldMan
+  IsRestrictedType: 0
   coolTime: 0
 --- !u!114 &8239425662469259388
 MonoBehaviour:
