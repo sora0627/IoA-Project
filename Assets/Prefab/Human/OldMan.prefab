@@ -131,7 +131,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dropTargetsRootName: ToiletPos
-  dropDistanceThreshold: 1
+  dropDistanceThreshold: 0.74
   cardType: 2
   partnerCard: {fileID: 0}
   isFamilyParent: 0

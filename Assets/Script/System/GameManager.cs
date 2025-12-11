@@ -50,6 +50,7 @@ namespace Systems
         public bool IsGameEnd
         {
             get { return state == State.GameEnd; }
+            set { if(value) state = State.GameEnd; }
         }
 
         public bool IsPlayerTurn
@@ -74,7 +75,7 @@ namespace Systems
 
             if (IsGameEnd)
             {
-
+                GameOver();
             }
         }
 
@@ -105,6 +106,11 @@ namespace Systems
             IsPlayerTurn = !IsPlayerTurn;
             Debug.Log((isPlayerTurn) ? ("PlayerTurn") : ("EnemyTurn"));
             IsSelect = true;
+        }
+
+        private void GameOver()
+        {
+            Debug.Log("ÅyGAME OVERÅzéËãlÇ‹ÇËÇ≈Ç∑ÅB");
         }
     }
 }
