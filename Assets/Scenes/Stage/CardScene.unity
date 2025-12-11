@@ -1119,6 +1119,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Normal: {fileID: 4118398614063173422, guid: 40af006269f29434191b58de7f016448, type: 3}
   OldMan: {fileID: 4523224765922085618, guid: 4574186c8d539b5459bbe41f690d92a1, type: 3}
+  Friend: {fileID: 3720820846210739580, guid: 8fa1a6041a2358946be1cc1bf833bcab, type: 3}
+  Family_p: {fileID: 6775954269931731464, guid: 6bc2cf3aebe734a44927b73c90b80aed, type: 3}
+  Family_c: {fileID: 13251746522091914, guid: a99d8e24cd208af448ec5347e0288de5, type: 3}
   GenerationPos: {fileID: 1821882735}
   parent: {fileID: 317242588}
   toiletPrefab: {fileID: 5964539696847786950, guid: 112f512b25979444d9d6faa82debd809, type: 3}
