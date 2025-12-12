@@ -20,6 +20,8 @@ namespace Systems
 
         private bool isPlayerTurn;
 
+        private bool IsGameOver = false;
+
         public bool IsReady
         {
             get { return state == State.Ready; }
@@ -110,7 +112,11 @@ namespace Systems
 
         private void GameOver()
         {
-            Debug.Log("ÅyGAME OVERÅzéËãlÇ‹ÇËÇ≈Ç∑ÅB");
+            if (IsGameOver)
+            {
+                Debug.Log("ÅyGAME OVERÅzéËãlÇ‹ÇËÇ≈Ç∑ÅB");
+                IsGameOver = true;
+            }
         }
     }
 }
