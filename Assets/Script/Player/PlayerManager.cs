@@ -66,7 +66,6 @@ namespace Player
                 CardData cardData = hands[index];
                 GameObject card = cardData.gameObject;
                 card.transform.position = HandPos[index].position;
-                cardData.coolTime = Random.Range(2, 5);
                 card.transform.parent = parent;
             }
         }
