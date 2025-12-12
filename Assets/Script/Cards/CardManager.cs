@@ -25,7 +25,7 @@ namespace Cards
         private Dictionary<string, int> InitialValue = new Dictionary<string, int>()
         {
             { "Normal", 10 },
-            { "Friend", 10 },
+            //{ "Friend", 10 },
             { "OldMan", 10 },
             { "Family", 10 },
         };

@@ -9,5 +9,7 @@ namespace Cards
     {
         public string CardName;
         public int coolTime;
+
+        public Move.CardType Type;
     }
 }

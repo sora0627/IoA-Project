@@ -1,4 +1,5 @@
 using Cards;
+using Move;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,9 @@ namespace Stage
         [Header("人のプレハブ")]
         [SerializeField] private GameObject Normal;
         [SerializeField] private GameObject OldMan;
+        [SerializeField] private GameObject Friend;
+        [SerializeField] private GameObject Family_p;
+        [SerializeField] private GameObject Family_c;
 
         [SerializeField]
         private Transform GenerationPos;
@@ -24,6 +28,8 @@ namespace Stage
         [SerializeField] private int toiletCount = 5;
 
         [SerializeField] private float spacing = 1.5f;
+
+        public List<GameObject> toilet = new List<GameObject>();
 
         // Start is called before the first frame update
         void Start()
@@ -41,6 +47,7 @@ namespace Stage
         {
             string cardName = SelectCard.CardName;
             GameObject cloneObject = null;
+            GameObject cloneObject1 = null;
 
             if (cardName.Equals("Normal"))
             {
@@ -50,7 +57,12 @@ namespace Stage
 
             if (cardName.Equals("Friend"))
             {
+                cloneObject = Instantiate(Friend, GenerationPos.position + new Vector3(-1, 0, 0), Quaternion.identity);
+                cloneObject1 = Instantiate(Friend, GenerationPos.position + new Vector3(1, 0, 0), Quaternion.identity);
+                cloneObject.transform.parent = parent;
+                cloneObject1.transform.parent = parent;
 
+                SetPartner(cloneObject, cloneObject1);
             }
 
             if (cardName.Equals("OldMan"))
@@ -61,7 +73,12 @@ namespace Stage
 
             if (cardName.Equals("Family"))
             {
+                cloneObject = Instantiate(Family_c, GenerationPos.position + new Vector3(-1, 0, 0), Quaternion.identity);
+                cloneObject1 = Instantiate(Family_p, GenerationPos.position + new Vector3(1, 0, 0), Quaternion.identity);
+                cloneObject.transform.parent = parent;
+                cloneObject1.transform.parent = parent;
 
+                SetPartner(cloneObject, cloneObject1);
             }
         }
         void GenerateToilets()
@@ -76,7 +93,17 @@ namespace Stage
                 float x = startX + (i * spacing);
 
                 obj.transform.localPosition = new Vector3(x, 0, 0);
+                toilet.Add(obj);
             }
+        }
+
+        void SetPartner(GameObject obj, GameObject obj1)
+        {
+            MouseDrag mouseDrag = obj.GetComponent<MouseDrag>();
+            MouseDrag mouseDrag1 = obj1.GetComponent<MouseDrag>();
+
+            mouseDrag.partnerCard = mouseDrag1;
+            mouseDrag1.partnerCard = mouseDrag;
         }
     }
 }

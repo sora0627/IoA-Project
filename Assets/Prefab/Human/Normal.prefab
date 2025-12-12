@@ -93,8 +93,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4118398614063173425}
-  - component: {fileID: 7135898881758544635}
   - component: {fileID: 1689623531787493496}
+  - component: {fileID: 7135898881758544635}
   m_Layer: 6
   m_Name: Normal
   m_TagString: Untagged
@@ -118,6 +118,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1689623531787493496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4118398614063173422}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6e4ac69a66df2748a9859f7d8feef33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropTargetsRootName: ToiletPos
+  dropDistanceThreshold: 0.74
+  cardType: 0
+  partnerCard: {fileID: 0}
+  isFamilyParent: 0
+  canIgnoreNeighborRestriction: 0
+  enableNeighborRestriction: 1
 --- !u!61 &7135898881758544635
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -144,17 +163,3 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 2}
   m_EdgeRadius: 0
---- !u!114 &1689623531787493496
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4118398614063173422}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6e4ac69a66df2748a9859f7d8feef33, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dropTargetsRootName: ToiletPos
-  dropDistanceThreshold: 1
