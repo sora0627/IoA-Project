@@ -4,9 +4,11 @@ using UnityEngine;
 using Cards;
 using Stage;
 using Systems;
+using System.Linq;
 
 namespace Move
 {
+    // カードの種類定義
     public enum CardType
     {
         Normal,
@@ -86,6 +88,7 @@ namespace Move
         {
             if (StageManager.instance == null) return;
             var toilets = StageManager.instance.toilet;
+
             List<ToiletHighlight> slots = new List<ToiletHighlight>();
             foreach (var t in toilets)
             {
@@ -96,13 +99,113 @@ namespace Move
 
             bool canPlaceAnyCard = false;
 
+            // 盤面に「相方候補（同種）」がいるかチェック
+            Dictionary<CardType, bool> hasTypeOnBoard = new Dictionary<CardType, bool>();
+            foreach (CardType ct in System.Enum.GetValues(typeof(CardType)))
+            {
+                bool exists = false;
+                foreach (var slot in slots)
+                {
+                    if (slot.IsOccupied && slot.OccupyingObject != null && slot.OccupyingObject.cardType == ct)
+                    {
+                        exists = true;
+                        break;
+                    }
+                }
+                hasTypeOnBoard[ct] = exists;
+            }
+
+            // 手札にある各タイプの枚数をカウント
+            Dictionary<CardType, int> handTypeCounts = new Dictionary<CardType, int>();
+            foreach (var c in handCards)
+            {
+                if (!handTypeCounts.ContainsKey(c.Type)) handTypeCounts[c.Type] = 0;
+                handTypeCounts[c.Type]++;
+            }
+
+            // Friendのペア配置シミュレーション関数
+            System.Func<bool> canPlaceFriendPair = () =>
+            {
+                for (int i = 0; i < slots.Count; i++)
+                {
+                    if (slots[i].IsOccupied) continue;
+                    // 1枚目: 両隣が空きでなければNG
+                    if ((i > 0 && slots[i - 1].IsOccupied) || (i < slots.Count - 1 && slots[i + 1].IsOccupied)) continue;
+
+                    // 2枚目があるか探す
+                    for (int j = 0; j < slots.Count; j++)
+                    {
+                        if (i == j || slots[j].IsOccupied) continue;
+
+                        // 2枚目: 隣が「空き」または「1枚目(i)」ならOK
+                        bool lOk = true;
+                        if (j > 0)
+                        {
+                            if (slots[j - 1].IsOccupied && (j - 1) != i) lOk = false;
+                        }
+
+                        bool rOk = true;
+                        if (j < slots.Count - 1)
+                        {
+                            if (slots[j + 1].IsOccupied && (j + 1) != i) rOk = false;
+                        }
+
+                        if (lOk && rOk) return true; // ペア成立可能
+                    }
+                }
+                return false;
+            };
+
+            // Family用シミュレーション（親子区別できないので両パターン試す）
+            System.Func<bool, bool> canPlaceFamilyPair = (bool asParent) =>
+            {
+                for (int i = 0; i < slots.Count; i++)
+                {
+                    if (slots[i].IsOccupied) continue;
+
+                    // 1枚目の条件
+                    if (!asParent)
+                    {
+                        // 子として置くなら、両隣空き必須
+                        if ((i > 0 && slots[i - 1].IsOccupied) || (i < slots.Count - 1 && slots[i + 1].IsOccupied)) continue;
+                    }
+
+                    // 2枚目（相方）を隣に置けるか
+                    // 左隣(i-1)
+                    if (i > 0 && !slots[i - 1].IsOccupied)
+                    {
+                        // 2枚目に対する条件
+                        if (asParent)
+                        {
+                            // 2枚目は子。さらにその隣(i-2)が空き必要
+                            if (i - 1 == 0 || !slots[i - 2].IsOccupied) return true;
+                        }
+                        else return true; // 2枚目は親なのでOK
+                    }
+                    // 右隣(i+1)
+                    if (i < slots.Count - 1 && !slots[i + 1].IsOccupied)
+                    {
+                        if (asParent)
+                        {
+                            // 2枚目は子。さらにその隣(i+2)が空き必要
+                            if (i + 1 == slots.Count - 1 || !slots[i + 2].IsOccupied) return true;
+                        }
+                        else return true;
+                    }
+                }
+                return false;
+            };
+
+            // シミュレーション結果をキャッシュ
+            bool friendPairResult = canPlaceFriendPair();
+            bool familyPairResult = canPlaceFamilyPair(true) || canPlaceFamilyPair(false);
+
             for (int i = 0; i < slots.Count; i++)
             {
                 if (slots[i].IsOccupied) continue;
 
                 ToiletHighlight left = (i > 0) ? slots[i - 1] : null;
                 ToiletHighlight right = (i < slots.Count - 1) ? slots[i + 1] : null;
-
                 bool isLeftOccupied = left != null && left.IsOccupied;
                 bool isRightOccupied = right != null && right.IsOccupied;
                 bool hasOccupiedNeighbor = isLeftOccupied || isRightOccupied;
@@ -113,6 +216,13 @@ namespace Move
 
                     if (globalNeighborRestriction)
                     {
+                        // 「盤面に同種がいる」かつ「手札の同種が奇数枚」の場合、相方が配置済みとみなす
+                        bool isPartnerLikelyOnBoard = hasTypeOnBoard.ContainsKey(type) && hasTypeOnBoard[type];
+                        if (handTypeCounts.ContainsKey(type) && handTypeCounts[type] % 2 == 0)
+                        {
+                            isPartnerLikelyOnBoard = false;
+                        }
+
                         switch (type)
                         {
                             case CardType.OldMan:
@@ -120,15 +230,32 @@ namespace Move
                                 break;
 
                             case CardType.Family:
-                                canPlaceAnyCard = true;
+                                if (isPartnerLikelyOnBoard)
+                                {
+                                    // 2枚目：相方の隣ならOK
+                                    bool adjPartner = (isLeftOccupied && IsSameType(left.OccupyingObject, type)) ||
+                                                      (isRightOccupied && IsSameType(right.OccupyingObject, type));
+                                    if (adjPartner) canPlaceAnyCard = true;
+                                }
+                                else
+                                {
+                                    // 1枚目：ペア配置可能か
+                                    if (familyPairResult) canPlaceAnyCard = true;
+                                }
                                 break;
 
                             case CardType.Friend:
-                                if (!hasOccupiedNeighbor) canPlaceAnyCard = true;
+                                if (isPartnerLikelyOnBoard)
+                                {
+                                    // 2枚目：他人の隣NG (空き or 同種ならOK)
+                                    bool leftOk = !isLeftOccupied || IsSameType(left.OccupyingObject, type);
+                                    bool rightOk = !isRightOccupied || IsSameType(right.OccupyingObject, type);
+                                    if (leftOk && rightOk) canPlaceAnyCard = true;
+                                }
                                 else
                                 {
-                                    if (isLeftOccupied && IsSameType(left.OccupyingObject, type)) canPlaceAnyCard = true;
-                                    if (isRightOccupied && IsSameType(right.OccupyingObject, type)) canPlaceAnyCard = true;
+                                    // 1枚目：ペア配置可能か
+                                    if (friendPairResult) canPlaceAnyCard = true;
                                 }
                                 break;
 
@@ -142,13 +269,21 @@ namespace Move
                     {
                         canPlaceAnyCard = true;
                     }
+
                     if (canPlaceAnyCard) break;
                 }
                 if (canPlaceAnyCard) break;
             }
 
-            if (!canPlaceAnyCard) GameManager.instance.IsGameEnd = true;
-            else Debug.Log("【Turn Start】置ける場所があります。");
+            if (!canPlaceAnyCard)
+            {
+                Debug.Log("【GAME OVER】手詰まりです。");
+                if (GameManager.instance != null) GameManager.instance.IsGameEnd = true;
+            }
+            else
+            {
+                Debug.Log("【Turn Start】置ける場所があります。");
+            }
         }
 
         private static bool IsSameType(MouseDrag obj, CardType type)
@@ -164,13 +299,11 @@ namespace Move
         private void OnMouseDown()
         {
             if (isLocked) return;
-
             if (currentSlot != null)
             {
                 currentSlot.Vacate();
                 currentSlot = null;
             }
-
             initialPosition = transform.position;
             zPosition = transform.position.z;
             dragOffset = transform.position - GetMouseWorldPosition();
@@ -231,41 +364,29 @@ namespace Move
                 currentSlot = successTarget;
                 transform.position = successTarget.transform.position;
 
-                // --- ロック（配置確定）判定 ---
                 switch (cardType)
                 {
                     case CardType.Friend:
-                        // 友達：隣でなくてもよい。両方が配置されたらロックする。
                         if (partnerCard != null && partnerCard.IsPlaced)
                         {
-                            Debug.Log("友達ペアが揃いました（位置不問）。ロックします");
+                            Debug.Log("友達ペアが揃いました。ロックします");
                             this.LockCard();
                             partnerCard.LockCard();
-                        }
-                        else
-                        {
-                            Debug.Log("相方がまだ配置されていません。再移動可能です");
                         }
                         break;
 
                     case CardType.Family:
-                        // 家族：隣同士でなければならない（吸着ルールがあるため置けた時点で隣のはずだが、完了条件としてチェック）
                         if (partnerCard != null && partnerCard.IsPlaced && IsNextToPartner(successIndex))
                         {
                             Debug.Log("家族ペアが隣同士になりました。ロックします");
                             this.LockCard();
                             partnerCard.LockCard();
                         }
-                        else
-                        {
-                            Debug.Log("相方がいない、または正規の位置ではありません。");
-                        }
                         break;
 
                     case CardType.Normal:
                     case CardType.OldMan:
                     default:
-                        // それ以外は置いた時点で確定
                         LockCard();
                         break;
                 }
@@ -283,15 +404,11 @@ namespace Move
             if (collider2D != null) collider2D.enabled = false;
         }
 
-        // 指定したインデックスが相方の隣かどうか
         private bool IsNextToPartner(int myIndex)
         {
             if (partnerCard == null || !partnerCard.IsPlaced) return false;
-
-            // 相方の場所を探す
             int partnerIndex = targetHighlights.IndexOf(partnerCard.CurrentSlot);
             if (partnerIndex == -1) return false;
-
             return Mathf.Abs(myIndex - partnerIndex) == 1;
         }
 
@@ -304,7 +421,6 @@ namespace Move
 
             ToiletHighlight left = (index > 0) ? targetHighlights[index - 1] : null;
             ToiletHighlight right = (index < targetHighlights.Count - 1) ? targetHighlights[index + 1] : null;
-
             bool isLeftOccupied = left != null && left.IsOccupied;
             bool isRightOccupied = right != null && right.IsOccupied;
 
@@ -319,53 +435,109 @@ namespace Move
                     return false;
 
                 case CardType.Friend:
-                    // 相方が置かれていない場合
+                    // 1枚目（相方不在）の時、ここにおいた結果2枚目が置けなくなるならNG
                     if (partnerCard == null || !partnerCard.IsPlaced)
                     {
-                        // 通常通り隣が空いていればOK
+                        // 1. まずここは置けるか？（他人の隣はNG）
                         if (isLeftOccupied || isRightOccupied) return true;
+
+                        // 2. ここを埋めたと仮定して、残りの場所で2枚目が置けるかシミュレーション
+                        bool possibleToPlaceSecond = false;
+                        for (int j = 0; j < targetHighlights.Count; j++)
+                        {
+                            if (index == j) continue;
+                            if (targetHighlights[j].IsOccupied) continue;
+
+                            // 2枚目の条件: 他人の隣NG (隣が空き or 自分(index)ならOK)
+                            bool lOk = true;
+                            if (j > 0)
+                            {
+                                // 左が埋まってる場合、それが自分(index)でなければNG（＝他人）
+                                if (targetHighlights[j - 1].IsOccupied) lOk = false;
+                                // 左が index (自分) ならOK
+                                if ((j - 1) == index) lOk = true;
+                            }
+
+                            bool rOk = true;
+                            if (j < targetHighlights.Count - 1)
+                            {
+                                // 右が埋まってる場合、それが自分(index)でなければNG（＝他人）
+                                if (targetHighlights[j + 1].IsOccupied) rOk = false;
+                                // 右が index (自分) ならOK
+                                if ((j + 1) == index) rOk = true;
+                            }
+
+                            if (lOk && rOk)
+                            {
+                                possibleToPlaceSecond = true;
+                                break;
+                            }
+                        }
+
+                        // 2枚目が置けないなら、ここには置かせない
+                        if (!possibleToPlaceSecond) return true;
+
                         return false;
                     }
                     else
                     {
-                        // 相方が置かれている場合
-                        // 他人の隣には置けない（相方か、空き地ならOK）
-
-                        if (isLeftOccupied)
-                        {
-                            if (left.OccupyingObject != partnerCard) return true; // 相方以外の隣はNG
-                        }
-                        if (isRightOccupied)
-                        {
-                            if (right.OccupyingObject != partnerCard) return true; // 相方以外の隣はNG
-                        }
-
-                        // 両隣が空き、または相方ならOK（離れていてもOK）
+                        // 2枚目（相方あり）
+                        // 他人の隣には置けない（隣が空き、または相方ならOK）
+                        if (isLeftOccupied && left.OccupyingObject != partnerCard) return true;
+                        if (isRightOccupied && right.OccupyingObject != partnerCard) return true;
                         return false;
                     }
 
                 case CardType.Family:
-                    // 1. 吸着ルール: 相方がいるならその隣にしか置けない
-                    if (partnerCard != null && partnerCard.IsPlaced)
+                    if (partnerCard == null || !partnerCard.IsPlaced)
                     {
-                        int partnerIndex = targetHighlights.IndexOf(partnerCard.CurrentSlot);
-                        if (partnerIndex != -1)
-                        {
-                            if (Mathf.Abs(index - partnerIndex) != 1) return true;
-                        }
-                    }
+                        // 1枚目（相方不在）
+                        // 条件1: ここに置けるか
+                        // 親なら他人隣OK、子なら他人隣NG
+                        if (!isFamilyParent && (isLeftOccupied || isRightOccupied)) return true;
 
-                    // 2. 親子の隣接ルール
-                    if (isFamilyParent)
-                    {
-                        // 親：他人の隣でもOK
+                        // 条件2: ここを埋めたと仮定して、隣に2枚目（相方）が置けるかシミュレーション
+                        bool possibleToPlaceSecond = false;
+
+                        // 左隣(index-1)に2枚目を置けるか？
+                        if (index > 0 && !targetHighlights[index - 1].IsOccupied)
+                        {
+                            // 2枚目に対する判定
+                            // 自分が親 -> 2枚目は子 -> 2枚目の左(index-2)が他人だとNG
+                            // 自分が子 -> 2枚目は親 -> 制限なし（indexの隣だから）
+                            if (isFamilyParent)
+                            {
+                                // index-2 が他人だとNG
+                                if (index - 1 == 0 || !targetHighlights[index - 2].IsOccupied) possibleToPlaceSecond = true;
+                            }
+                            else possibleToPlaceSecond = true; // 2枚目は親なのでOK
+                        }
+
+                        // 右隣(index+1)に2枚目を置けるか？
+                        if (!possibleToPlaceSecond && index < targetHighlights.Count - 1 && !targetHighlights[index + 1].IsOccupied)
+                        {
+                            if (isFamilyParent)
+                            {
+                                // index+2 が他人だとNG
+                                if (index + 1 == targetHighlights.Count - 1 || !targetHighlights[index + 2].IsOccupied) possibleToPlaceSecond = true;
+                            }
+                            else possibleToPlaceSecond = true;
+                        }
+
+                        if (!possibleToPlaceSecond) return true;
                         return false;
                     }
                     else
                     {
-                        // 子：相方（親）以外の隣はNG
-                        if (isLeftOccupied && left.OccupyingObject != partnerCard) return true;
-                        if (isRightOccupied && right.OccupyingObject != partnerCard) return true;
+                        // 2枚目（相方あり）
+                        int partnerIndex = targetHighlights.IndexOf(partnerCard.CurrentSlot);
+                        if (partnerIndex != -1 && Mathf.Abs(index - partnerIndex) != 1) return true;
+
+                        if (!isFamilyParent)
+                        {
+                            if (isLeftOccupied && left.OccupyingObject != partnerCard) return true;
+                            if (isRightOccupied && right.OccupyingObject != partnerCard) return true;
+                        }
                         return false;
                     }
 

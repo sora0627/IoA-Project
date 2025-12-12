@@ -26,8 +26,8 @@ namespace Cards
         {
             { "Normal", 10 },
             { "Friend", 10 },
-            { "OldMan", 10 },
-            { "Family", 10 },
+            //{ "OldMan", 10 },
+            //{ "Family", 10 },
         };
 
         // Start is called before the first frame update
