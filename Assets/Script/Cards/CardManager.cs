@@ -25,7 +25,7 @@ namespace Cards
         private Dictionary<string, int> InitialValue = new Dictionary<string, int>()
         {
             { "Normal", 10 },
-            //{ "Friend", 10 },
+            { "Friend", 10 },
             { "OldMan", 10 },
             { "Family", 10 },
         };
@@ -76,6 +76,7 @@ namespace Cards
             if (deck.Count > 0)
             {
                 hand.Add(deck[0]);
+                SetOutTime(deck[0]);
                 deck.RemoveAt(0);
             }
         }
@@ -83,6 +84,39 @@ namespace Cards
         public void ShuffleDeck()
         {
             deck = deck.OrderBy(a => Guid.NewGuid()).ToList();
+        }
+
+        public void SetOutTime(CardData cardData)
+        {
+            int coolTime, coolTime1;
+
+            switch (cardData.Type)
+            {
+                case Move.CardType.Normal:
+                case Move.CardType.OldMan:
+                    coolTime = UnityEngine.Random.Range(1, 101);
+                    cardData.outTime = OutTime(coolTime);
+                    break; 
+                case Move.CardType.Friend:
+                case Move.CardType.Family:
+                    coolTime = UnityEngine.Random.Range(1, 101);
+                    coolTime1 = UnityEngine.Random.Range(1, 101);
+                    cardData.outTime = OutTime(coolTime);
+                    cardData.outTime1 = OutTime(coolTime1);
+                    break;
+            }
+
+        }
+
+        private int OutTime(int time)
+        {
+            int outTime;
+
+            if (time < 15) outTime = 3;
+            else if(time < 45) outTime = 4;
+            else if(time < 80) outTime = 5;
+            else outTime = 6;
+            return outTime;
         }
     }
 }
