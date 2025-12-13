@@ -1,3 +1,4 @@
+using Move;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -14,7 +15,7 @@ namespace Stage
 
         private void Update()
         {
-            if (GameManager.instance.IsSelect && IsReduse)
+            if (GameManager.instance.IsSelect && !IsReduse)
             {
                 outTime -= 1;
                 IsReduse = true;
@@ -28,10 +29,18 @@ namespace Stage
             TimeOut(outTime);
         }
 
+        /// <summary>
+        /// カウントが０になったときの処理
+        /// トイレが出ていく
+        /// </summary>
+        /// <param name="time"></param>
         void TimeOut(int time)
         {
             if (time > 0) return;
-
+            MouseDrag mouseDrag = this.GetComponent<MouseDrag>();
+            ToiletHighlight toilet = mouseDrag.CurrentSlot;
+            toilet.Vacate();
+            gameObject.SetActive(false);
         }
     }
 }
