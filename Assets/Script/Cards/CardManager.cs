@@ -24,10 +24,10 @@ namespace Cards
 
         private Dictionary<string, int> InitialValue = new Dictionary<string, int>()
         {
-            { "Normal", 10 },
-            { "Friend", 10 },
-            { "OldMan", 10 },
-            { "Family", 10 },
+            { "Normal", 50 },
+            { "Friend", 20 },
+            { "OldMan", 15 },
+            { "Family", 15 },
         };
 
         // Start is called before the first frame update

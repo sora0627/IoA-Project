@@ -80,6 +80,8 @@ namespace Stage
 
                 SetPartner(cloneObject, cloneObject1);
             }
+
+            SetCheckOutTime(SelectCard, cloneObject, cloneObject1);
         }
         void GenerateToilets()
         {
@@ -104,6 +106,31 @@ namespace Stage
 
             mouseDrag.partnerCard = mouseDrag1;
             mouseDrag1.partnerCard = mouseDrag;
+        }
+
+        /// <summary>
+        /// カードに記載されている退出時間をオブジェクトに書き込む
+        /// </summary>
+        /// <param name="cardData"></param>
+        /// <param name="obj"></param>
+        /// <param name="obj1"></param>
+        private void SetCheckOutTime(CardData cardData , GameObject obj, GameObject obj1)
+        {
+            List<GameObject> objects = new List<GameObject>() { obj,  obj1 };
+            int count = 0;
+
+            foreach (GameObject gameObject in objects)
+            {
+                if (cardData == null || gameObject == null) continue;
+
+                HumanData humanData = gameObject.GetComponent<HumanData>();
+                if (humanData == null) continue;
+
+                if (count == 0) humanData.outTime = cardData.outTime;
+                else humanData.outTime = cardData.outTime1;
+
+                count++;
+            }
         }
     }
 }
