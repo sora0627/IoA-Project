@@ -11,13 +11,13 @@ namespace Stage
     {
         private bool IsReduse = false;
 
-        public int outTime;
+        public int checkoutTime;
 
         private void Update()
         {
             if (GameManager.instance.IsSelect && !IsReduse)
             {
-                outTime -= 1;
+                checkoutTime -= 1;
                 IsReduse = true;
             }
 
@@ -26,7 +26,7 @@ namespace Stage
                 IsReduse = false;
             }
 
-            TimeOut(outTime);
+            TimeOut(checkoutTime);
         }
 
         /// <summary>
