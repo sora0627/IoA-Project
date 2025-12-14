@@ -1,4 +1,5 @@
 using Cards;
+using Stage;
 using System.Collections;
 using System.Collections.Generic;
 using Systems;
@@ -48,7 +49,28 @@ namespace Enemy
         //ここにCPUのプログラムをかく
         int SelectCard()
         {
+            List<bool> isOccupied = new List<bool>();
+
+            isOccupied = IsOccupied();
             return 1;
+        }
+
+        /// <summary>
+        /// トイレに人がいるか調べる
+        /// true -> 人がいる
+        /// false　-> 人がいない
+        /// </summary>
+        /// <returns></returns>
+        private List<bool> IsOccupied()
+        {
+            List<bool> isOccupied = new List<bool>();
+            foreach (GameObject toilet in StageManager.instance.toilet)
+            {
+                ToiletHighlight toiletHighlight = toilet.GetComponent<ToiletHighlight>();
+                isOccupied.Add(toiletHighlight.IsOccupied);
+            }
+
+            return isOccupied;
         }
 
         public void UseHand(int index)

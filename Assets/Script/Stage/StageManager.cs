@@ -126,8 +126,8 @@ namespace Stage
                 HumanData humanData = gameObject.GetComponent<HumanData>();
                 if (humanData == null) continue;
 
-                if (count == 0) humanData.outTime = cardData.outTime;
-                else humanData.outTime = cardData.outTime1;
+                if (count == 0) humanData.checkoutTime = cardData.checkoutTime;
+                else humanData.checkoutTime = cardData.checkoutTime1;
 
                 count++;
             }

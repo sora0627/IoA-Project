@@ -8,8 +8,8 @@ namespace Cards
     public class CardData : MonoBehaviour
     {
         public string CardName;
-        public int outTime;
-        public int outTime1;
+        public int checkoutTime;
+        public int checkoutTime1;
         public Move.CardType Type;
     }
 }
