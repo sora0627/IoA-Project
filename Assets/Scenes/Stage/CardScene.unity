@@ -617,7 +617,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   countdown: 10
-  countdownText: {fileID: 0}
+  countdownText: {fileID: 1434528244}
 --- !u!4 &710635355
 Transform:
   m_ObjectHideFlags: 0
@@ -717,7 +717,6 @@ MonoBehaviour:
   - {fileID: 899345241}
   - {fileID: 1497235739}
   - {fileID: 82998217}
-  isSet: 0
 --- !u!1 &899345240
 GameObject:
   m_ObjectHideFlags: 0

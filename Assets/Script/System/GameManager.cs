@@ -1,5 +1,7 @@
+using Stage;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Purchasing;
 using UnityEngine;
 
 namespace Systems
@@ -12,6 +14,7 @@ namespace Systems
             OnGame,
             Select,
             Set,
+            TrueEnd,
             Pause,
             GameEnd,
         }
@@ -20,7 +23,7 @@ namespace Systems
 
         private bool isPlayerTurn;
 
-        private bool IsGameOver = false;
+        private bool isGameOver = false;
 
         public bool IsReady
         {
@@ -49,6 +52,12 @@ namespace Systems
             get { return state == State.Pause; }
         }
 
+        public bool IsTrueEnd
+        {
+            get { return state == State.TrueEnd; }
+            set { if (value) state = State.TrueEnd; }
+        }
+
         public bool IsGameEnd
         {
             get { return state == State.GameEnd; }
@@ -73,6 +82,11 @@ namespace Systems
             if (IsOnGame)
             {
                 IsSelect = true;
+            }
+
+            if (IsTrueEnd)
+            {
+                TurnChange();
             }
 
             if (IsGameEnd)
@@ -107,15 +121,16 @@ namespace Systems
         {
             IsPlayerTurn = !IsPlayerTurn;
             Debug.Log((isPlayerTurn) ? ("PlayerTurn") : ("EnemyTurn"));
+            StageManager.instance.ReduseCheckoutTime();
             IsSelect = true;
         }
 
         private void GameOver()
         {
-            if (IsGameOver)
+            if (isGameOver)
             {
                 Debug.Log("ÅyGAME OVERÅzéËãlÇ‹ÇËÇ≈Ç∑ÅB");
-                IsGameOver = true;
+                isGameOver = true;
             }
         }
     }
