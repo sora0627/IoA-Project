@@ -20,8 +20,6 @@ namespace Player
         private bool isDraw = false;
         private bool isGeneration = false;
 
-        public bool isSet = false;
-
         public GameObject SelectCard
         {
             get { return currentSelectCard; }
@@ -50,12 +48,13 @@ namespace Player
                 {
                     isGeneration = true;
                     CardData cardData = SelectCard.GetComponent<CardData>();
-                    Stage.StageManager.instance.CharacterGeneration(cardData);
+                    StageManager.instance.CharacterGeneration(cardData);
                 }
-                if (!isSet)
-                {
-                    TurnEnd();
-                }
+            }
+
+            if (GameManager.instance.IsTrueEnd)
+            {
+                TurnEnd();
             }
         }
 
@@ -230,17 +229,15 @@ namespace Player
 
         void TurnStart()
         {
-            isSet = false;
             isDraw = true;
             CardManager.instance.DrawCard(hands);
             SetCard();
 
-            Move.MouseDrag.CheckGameOverAtStartOfTurn(true, hands);
+            MouseDrag.CheckGameOverAtStartOfTurn(true, hands);
         }
 
         void TurnEnd()
         {
-            GameManager.instance.TurnChange();
             isDraw = false;
             isGeneration = false;
         }

@@ -1,7 +1,9 @@
 using Cards;
+using Enemy;
 using Move;
 using System.Collections;
 using System.Collections.Generic;
+using Systems;
 using UnityEngine;
 
 namespace Stage
@@ -82,6 +84,11 @@ namespace Stage
             }
 
             SetCheckOutTime(SelectCard, cloneObject, cloneObject1);
+
+            if (!GameManager.instance.IsPlayerTurn)
+            {
+                EnemyManager.instance.SetHuman();
+            }
         }
         void GenerateToilets()
         {
@@ -130,6 +137,15 @@ namespace Stage
                 else humanData.checkoutTime = cardData.checkoutTime1;
 
                 count++;
+            }
+        }
+
+        public void ReduseCheckoutTime()
+        {
+            foreach (Transform child in parent)
+            {
+                HumanData humanData = child.gameObject.GetComponent<HumanData>();
+                humanData.ReduseTime();
             }
         }
     }

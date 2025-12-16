@@ -332,6 +332,7 @@ namespace Move
         {
             isLocked = true;
             if (collider2D != null) collider2D.enabled = false;
+            GameManager.instance.IsTrueEnd = true;
         }
 
         private bool IsNextToPartner(int myIndex)

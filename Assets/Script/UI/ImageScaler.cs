@@ -42,7 +42,6 @@ namespace UI
 
                 List<CardData> cardDatas = Player.PlayerManager.instance.hands;
                 CardData cardData = gameObject.GetComponent<CardData>();
-                Debug.Log(cardDatas.IndexOf(cardData));
                 Player.PlayerManager.instance.UseHand(cardDatas.IndexOf(cardData));
             }
         }
