@@ -1,7 +1,9 @@
 using Cards;
+using Enemy;
 using Move;
 using System.Collections;
 using System.Collections.Generic;
+using Systems;
 using UnityEngine;
 
 namespace Stage
@@ -35,12 +37,7 @@ namespace Stage
         void Start()
         {
             GenerateToilets();
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
+            EnemyManager.instance.SetTargetHighlights(toilet);
         }
 
         public void CharacterGeneration(CardData SelectCard)
@@ -82,6 +79,11 @@ namespace Stage
             }
 
             SetCheckOutTime(SelectCard, cloneObject, cloneObject1);
+
+            if (!GameManager.instance.IsPlayerTurn)
+            {
+                EnemyManager.instance.SetHuman(cloneObject, cloneObject1);
+            }
         }
         void GenerateToilets()
         {
@@ -126,10 +128,19 @@ namespace Stage
                 HumanData humanData = gameObject.GetComponent<HumanData>();
                 if (humanData == null) continue;
 
-                if (count == 0) humanData.outTime = cardData.outTime;
-                else humanData.outTime = cardData.outTime1;
+                if (count == 0) humanData.checkoutTime = cardData.checkoutTime;
+                else humanData.checkoutTime = cardData.checkoutTime1;
 
                 count++;
+            }
+        }
+
+        public void ReduseCheckoutTime()
+        {
+            foreach (Transform child in parent)
+            {
+                HumanData humanData = child.gameObject.GetComponent<HumanData>();
+                humanData.ReduseTime();
             }
         }
     }

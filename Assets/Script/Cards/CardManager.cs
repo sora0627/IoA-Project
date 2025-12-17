@@ -30,18 +30,6 @@ namespace Cards
             { "Family", 15 },
         };
 
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-
         public void SetDeck()
         {
             CardData cloneCard = null;
@@ -95,14 +83,14 @@ namespace Cards
                 case Move.CardType.Normal:
                 case Move.CardType.OldMan:
                     coolTime = UnityEngine.Random.Range(1, 101);
-                    cardData.outTime = OutTime(coolTime);
+                    cardData.checkoutTime = OutTime(coolTime);
                     break; 
                 case Move.CardType.Friend:
                 case Move.CardType.Family:
                     coolTime = UnityEngine.Random.Range(1, 101);
                     coolTime1 = UnityEngine.Random.Range(1, 101);
-                    cardData.outTime = OutTime(coolTime);
-                    cardData.outTime1 = OutTime(coolTime1);
+                    cardData.checkoutTime = OutTime(coolTime);
+                    cardData.checkoutTime1 = OutTime(coolTime1);
                     break;
             }
 

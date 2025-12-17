@@ -1,6 +1,9 @@
+using Stage;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Purchasing;
 using UnityEngine;
+using System;
 
 namespace Systems
 {
@@ -12,6 +15,7 @@ namespace Systems
             OnGame,
             Select,
             Set,
+            TrueEnd,
             Pause,
             GameEnd,
         }
@@ -19,8 +23,7 @@ namespace Systems
         private State state;
 
         private bool isPlayerTurn;
-
-        private bool IsGameOver = false;
+        private bool isGameOver = false;
 
         public bool IsReady
         {
@@ -49,6 +52,12 @@ namespace Systems
             get { return state == State.Pause; }
         }
 
+        public bool IsTrueEnd
+        {
+            get { return state == State.TrueEnd; }
+            set { if (value) state = State.TrueEnd; }
+        }
+
         public bool IsGameEnd
         {
             get { return state == State.GameEnd; }
@@ -75,6 +84,11 @@ namespace Systems
                 IsSelect = true;
             }
 
+            if (IsTrueEnd)
+            {
+                TurnChange();
+            }
+
             if (IsGameEnd)
             {
                 GameOver();
@@ -98,24 +112,34 @@ namespace Systems
 
         void StartSetTurn()
         {
-            int rand = Random.Range(0, 2);
+            int rand = UnityEngine.Random.Range(0, 2);
             isPlayerTurn = (rand == 0) ? true : false;
             Debug.Log((isPlayerTurn) ? ("êÊçs") : ("å„çU"));
         }
 
-        public void TurnChange()
+        void TurnChange()
         {
+
             IsPlayerTurn = !IsPlayerTurn;
             Debug.Log((isPlayerTurn) ? ("PlayerTurn") : ("EnemyTurn"));
+            StageManager.instance.ReduseCheckoutTime();
             IsSelect = true;
         }
 
         private void GameOver()
         {
-            if (IsGameOver)
+            if (!isGameOver)
             {
                 Debug.Log("ÅyGAME OVERÅzéËãlÇ‹ÇËÇ≈Ç∑ÅB");
-                IsGameOver = true;
+                if (IsPlayerTurn)
+                {
+                    Debug.Log("You Lose");
+                }
+                else
+                {
+                    Debug.Log("You Win");
+                }
+                isGameOver = true;
             }
         }
     }
