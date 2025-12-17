@@ -37,12 +37,7 @@ namespace Stage
         void Start()
         {
             GenerateToilets();
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
+            EnemyManager.instance.SetTargetHighlights(toilet);
         }
 
         public void CharacterGeneration(CardData SelectCard)
@@ -87,7 +82,7 @@ namespace Stage
 
             if (!GameManager.instance.IsPlayerTurn)
             {
-                EnemyManager.instance.SetHuman();
+                EnemyManager.instance.SetHuman(cloneObject, cloneObject1);
             }
         }
         void GenerateToilets()

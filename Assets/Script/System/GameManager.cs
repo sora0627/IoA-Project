@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Purchasing;
 using UnityEngine;
+using System;
 
 namespace Systems
 {
@@ -22,7 +23,6 @@ namespace Systems
         private State state;
 
         private bool isPlayerTurn;
-
         private bool isGameOver = false;
 
         public bool IsReady
@@ -112,13 +112,14 @@ namespace Systems
 
         void StartSetTurn()
         {
-            int rand = Random.Range(0, 2);
+            int rand = UnityEngine.Random.Range(0, 2);
             isPlayerTurn = (rand == 0) ? true : false;
             Debug.Log((isPlayerTurn) ? ("êÊçs") : ("å„çU"));
         }
 
-        public void TurnChange()
+        void TurnChange()
         {
+
             IsPlayerTurn = !IsPlayerTurn;
             Debug.Log((isPlayerTurn) ? ("PlayerTurn") : ("EnemyTurn"));
             StageManager.instance.ReduseCheckoutTime();
@@ -127,9 +128,17 @@ namespace Systems
 
         private void GameOver()
         {
-            if (isGameOver)
+            if (!isGameOver)
             {
                 Debug.Log("ÅyGAME OVERÅzéËãlÇ‹ÇËÇ≈Ç∑ÅB");
+                if (IsPlayerTurn)
+                {
+                    Debug.Log("You Lose");
+                }
+                else
+                {
+                    Debug.Log("You Win");
+                }
                 isGameOver = true;
             }
         }
