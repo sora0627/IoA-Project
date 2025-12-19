@@ -24,10 +24,10 @@ namespace Cards
 
         private Dictionary<string, int> InitialValue = new Dictionary<string, int>()
         {
-            { "Normal", 50 },
-            { "Friend", 20 },
-            { "OldMan", 15 },
-            { "Family", 15 },
+            { "Normal", 45 },
+            { "Friend", 10 },
+            { "OldMan", 10 },
+            { "Family", 35 },
         };
 
         public void SetDeck()
@@ -82,13 +82,13 @@ namespace Cards
             {
                 case Move.CardType.Normal:
                 case Move.CardType.OldMan:
-                    coolTime = UnityEngine.Random.Range(1, 101);
+                    coolTime = UnityEngine.Random.Range(0, 100);
                     cardData.checkoutTime = OutTime(coolTime);
                     break; 
                 case Move.CardType.Friend:
                 case Move.CardType.Family:
-                    coolTime = UnityEngine.Random.Range(1, 101);
-                    coolTime1 = UnityEngine.Random.Range(1, 101);
+                    coolTime = UnityEngine.Random.Range(0, 100);
+                    coolTime1 = UnityEngine.Random.Range(0, 100);
                     cardData.checkoutTime = OutTime(coolTime);
                     cardData.checkoutTime1 = OutTime(coolTime1);
                     break;

@@ -13,7 +13,7 @@ namespace Player
         [SerializeField]
         public List<CardData> hands;
 
-        [SerializeField] private Transform parent;
+        [SerializeField] public Transform parent;
         [SerializeField] private List<Transform> HandPos;
 
         private GameObject currentSelectCard;
@@ -34,7 +34,6 @@ namespace Player
             {
                 parent.gameObject.SetActive(true);
                 TurnStart();
-
             }
 
             if (GameManager.instance.IsSet)
@@ -53,6 +52,12 @@ namespace Player
             {
                 TurnEnd();
             }
+        }
+
+        public void Initialization()
+        {
+            isDraw = false;
+            isGeneration = false;
         }
 
         public void SetCard()

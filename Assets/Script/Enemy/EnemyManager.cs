@@ -56,8 +56,14 @@ namespace Enemy
             }
         }
 
+        public void Initialization()
+        {
+            isDraw = false;
+        }
+
         public void SetTargetHighlights(List<GameObject> toilet)
         {
+            targetHighlights.Clear();
             if (StageManager.instance.toilet.Count > 0)
             {
                 foreach (var obj in toilet)
@@ -81,7 +87,8 @@ namespace Enemy
 
             foreach (CardType cardType in priority)
             {
-                if (handType.Contains(cardType))
+                Debug.Log(cardType + ":" + CheckPlaceablePairs(cardType));
+                if (handType.Contains(cardType) && CheckPlaceablePairs(cardType))
                 {
                     index = handType.IndexOf(cardType);
                     CurrentSelectCard = cardType;
@@ -139,13 +146,9 @@ namespace Enemy
             {
                 return new List<CardType>() { CardType.Friend, CardType.Family, CardType.Normal, CardType.OldMan };
             }
-            else if (position.Max() >= 3)
-            {
-                return new List<CardType> { CardType.Friend, CardType.Family, CardType.Normal, CardType.OldMan };
-            }
             else
             {
-                return new List<CardType> { CardType.OldMan };
+                return new List<CardType> { CardType.Family, CardType.Normal, CardType.Friend, CardType.OldMan };
             }
         }
 
@@ -161,6 +164,13 @@ namespace Enemy
             List<int> setPosition1;
 
             if (cloneObj == null) return;
+
+            if (cloneObj1 != null)
+            {
+                MouseDrag myDrag2 = cloneObj1.GetComponent<MouseDrag>();
+                DebugPlaceablePairs(myDrag2);
+            }
+
             MouseDrag myDrag = cloneObj.GetComponent<MouseDrag>();
             setPosition = GetPlaceableIndices(myDrag);
 
@@ -194,14 +204,7 @@ namespace Enemy
         {
             if (StageManager.instance == null) return;
 
-            // スロット情報の取得
-            List<ToiletHighlight> slots = new List<ToiletHighlight>();
-            foreach (var t in StageManager.instance.toilet)
-            {
-                if (t != null) slots.Add(t.GetComponent<ToiletHighlight>());
-            }
-
-            if (slots.Count == 0) return;
+            if (targetHighlights.Count == 0) return;
 
             if (myDrag == null)
             {
@@ -214,23 +217,23 @@ namespace Enemy
             bool anyPairFound = false;
 
             // 1. 全スロットを走査して「1体目の候補地」を探す
-            for (int i = 0; i < slots.Count; i++)
+            for (int i = 0; i < targetHighlights.Count; i++)
             {
-                if (slots[i].IsOccupied) continue;
+                if (targetHighlights[i].IsOccupied) continue;
 
                 // 1体目が条件を満たすかチェック
-                if (!CheckFirstPlacementCondition(i, slots, type, isParent)) continue;
+                if (!CheckFirstPlacementCondition(i, targetHighlights, type, isParent)) continue;
 
                 // 2. 「1体目をiに置いた」と仮定して、「2体目の候補地」を探す
                 List<int> validSecondIndices = new List<int>();
 
-                for (int j = 0; j < slots.Count; j++)
+                for (int j = 0; j < targetHighlights.Count; j++)
                 {
                     if (i == j) continue; // 同じ場所には置けない
-                    if (slots[j].IsOccupied) continue; // 埋まっている場所には置けない
+                    if (targetHighlights[j].IsOccupied) continue; // 埋まっている場所には置けない
 
                     // 2体目が条件を満たすかチェック（iには味方がいる前提）
-                    if (CheckSecondPlacementCondition(i, j, slots, type, isParent))
+                    if (CheckSecondPlacementCondition(i, j, targetHighlights, type, isParent))
                     {
                         validSecondIndices.Add(j);
                     }
@@ -252,6 +255,45 @@ namespace Enemy
         }
 
         /// <summary>
+        /// カードデータ（MouseDrag付き）を受け取り、1体目と2体目の配置可能ペアを計算して配置できるか判断する
+        /// </summary>
+        public bool CheckPlaceablePairs(CardType type)
+        {
+            bool anyPairFound = false;
+
+            // 1. 全スロットを走査して「1体目の候補地」を探す
+            for (int i = 0; i < targetHighlights.Count; i++)
+            {
+                if (targetHighlights[i].IsOccupied) continue;
+
+                // 1体目が条件を満たすかチェック
+                if (!CheckFirstPlacementCondition(i, targetHighlights, type, false)) continue;
+
+                // 2. 「1体目をiに置いた」と仮定して、「2体目の候補地」を探す
+                List<int> validSecondIndices = new List<int>();
+
+                for (int j = 0; j < targetHighlights.Count; j++)
+                {
+                    if (i == j) continue; // 同じ場所には置けない
+                    if (targetHighlights[j].IsOccupied) continue; // 埋まっている場所には置けない
+
+                    // 2体目が条件を満たすかチェック（iには味方がいる前提）
+                    if (CheckSecondPlacementCondition(i, j, targetHighlights, type, true))
+                    {
+                        validSecondIndices.Add(j);
+                    }
+                }
+
+                // 2体目の置き場所が1つでもあれば、1体目の配置場所として有効
+                if (validSecondIndices.Count > 0)
+                {
+                    anyPairFound = true;
+                }
+            }
+            return anyPairFound;
+        }
+
+        /// <summary>
         /// 1体目を指定したインデックスに置いたと仮定して、2体目を配置可能なインデックスのリストを返します。
         /// </summary>
         /// <param name="cardData">カードデータ</param>
@@ -260,17 +302,10 @@ namespace Enemy
         public List<int> GetSecondPlaceableIndices(MouseDrag myDrag, int firstIndex)
         {
             List<int> secondIndices = new List<int>();
-
+            secondIndices.Clear();
             if (StageManager.instance == null) return secondIndices;
 
-            var toilets = StageManager.instance.toilet;
-            List<ToiletHighlight> slots = new List<ToiletHighlight>();
-            foreach (var t in toilets)
-            {
-                if (t != null) slots.Add(t.GetComponent<ToiletHighlight>());
-            }
-
-            if (firstIndex < 0 || firstIndex >= slots.Count) return secondIndices;
+            if (firstIndex < 0 || firstIndex >= targetHighlights.Count) return secondIndices;
 
             if (myDrag == null) return secondIndices;
 
@@ -281,24 +316,24 @@ namespace Enemy
             switch (type)
             {
                 case CardType.Friend:
-                    for (int j = 0; j < slots.Count; j++)
+                    for (int j = 0; j < targetHighlights.Count; j++)
                     {
                         if (j == firstIndex) continue; // 同じ場所は不可
-                        if (slots[j].IsOccupied) continue; // 埋まってる場所は不可
+                        if (targetHighlights[j].IsOccupied) continue; // 埋まってる場所は不可
 
                         // 2体目(j)の条件: 隣が「空き」または「1体目(firstIndex)」ならOK（他人の隣はNG）
                         bool leftOk = true;
                         if (j > 0)
                         {
                             // 左が埋まっていて、かつ 1体目(firstIndex) でなければNG（＝他人）
-                            if (slots[j - 1].IsOccupied && (j - 1) != firstIndex) leftOk = false;
+                            if (targetHighlights[j - 1].IsOccupied && (j - 1) != firstIndex) leftOk = false;
                         }
 
                         bool rightOk = true;
-                        if (j < slots.Count - 1)
+                        if (j < targetHighlights.Count - 1)
                         {
                             // 右が埋まっていて、かつ 1体目(firstIndex) でなければNG（＝他人）
-                            if (slots[j + 1].IsOccupied && (j + 1) != firstIndex) rightOk = false;
+                            if (targetHighlights[j + 1].IsOccupied && (j + 1) != firstIndex) rightOk = false;
                         }
 
                         if (leftOk && rightOk) secondIndices.Add(j);
@@ -309,14 +344,14 @@ namespace Enemy
                     // 2体目は必ず隣接していなければならない
 
                     // 左隣(firstIndex - 1)をチェック
-                    if (firstIndex > 0 && !slots[firstIndex - 1].IsOccupied)
+                    if (firstIndex > 0 && !targetHighlights[firstIndex - 1].IsOccupied)
                     {
                         // 2体目に対する条件チェック
                         bool canPlace = true;
                         if (isParent)
                         {
                             // 1体目が親(true) -> 2体目は子。その左(firstIndex-2)が他人だとNG
-                            if (firstIndex - 1 > 0 && slots[firstIndex - 2].IsOccupied) canPlace = false;
+                            if (firstIndex - 1 > 0 && targetHighlights[firstIndex - 2].IsOccupied) canPlace = false;
                         }
                         // 1体目が子(false) -> 2体目は親。制限なし
 
@@ -324,14 +359,14 @@ namespace Enemy
                     }
 
                     // 右隣(firstIndex + 1)をチェック
-                    if (firstIndex < slots.Count - 1 && !slots[firstIndex + 1].IsOccupied)
+                    if (firstIndex < targetHighlights.Count - 1 && !targetHighlights[firstIndex + 1].IsOccupied)
                     {
                         // 2体目に対する条件チェック
                         bool canPlace = true;
                         if (isParent)
                         {
                             // 1体目が親(true) -> 2体目は子。その右(firstIndex+2)が他人だとNG
-                            if (firstIndex + 1 < slots.Count - 1 && slots[firstIndex + 2].IsOccupied) canPlace = false;
+                            if (firstIndex + 1 < targetHighlights.Count - 1 && targetHighlights[firstIndex + 2].IsOccupied) canPlace = false;
                         }
                         // 1体目が子(false) -> 2体目は親。制限なし
 
@@ -351,11 +386,11 @@ namespace Enemy
         /// <summary>
         /// 1体目の配置条件チェック
         /// </summary>
-        private bool CheckFirstPlacementCondition(int idx, List<ToiletHighlight> slots, CardType type, bool isParent)
+        private bool CheckFirstPlacementCondition(int idx, List<ToiletHighlight> targetHighlights, CardType type, bool isParent)
         {
             // 隣接情報の取得
-            bool leftOccupied = (idx > 0 && slots[idx - 1].IsOccupied);
-            bool rightOccupied = (idx < slots.Count - 1 && slots[idx + 1].IsOccupied);
+            bool leftOccupied = (idx > 0 && targetHighlights[idx - 1].IsOccupied);
+            bool rightOccupied = (idx < targetHighlights.Count - 1 && targetHighlights[idx + 1].IsOccupied);
 
             switch (type)
             {
@@ -386,7 +421,7 @@ namespace Enemy
         /// <summary>
         /// 2体目の配置条件チェック（idx1に1体目があると仮定）
         /// </summary>
-        private bool CheckSecondPlacementCondition(int idx1, int idx2, List<ToiletHighlight> slots, CardType type, bool isParent1)
+        private bool CheckSecondPlacementCondition(int idx1, int idx2, List<ToiletHighlight> targetHighlights, CardType type, bool isParent1)
         {
             // idx2の隣接情報の取得
             // ※ idx1 は「1体目（味方）」として扱うため、IsOccupied=falseでも「埋まっているもの」として判定する
@@ -394,14 +429,14 @@ namespace Enemy
             bool leftIsStranger = false;
             if (idx2 > 0)
             {
-                if (slots[idx2 - 1].IsOccupied) leftIsStranger = true; // 埋まってたら他人
+                if (targetHighlights[idx2 - 1].IsOccupied) leftIsStranger = true; // 埋まってたら他人
                 if ((idx2 - 1) == idx1) leftIsStranger = false;        // ただし1体目なら味方
             }
 
             bool rightIsStranger = false;
-            if (idx2 < slots.Count - 1)
+            if (idx2 < targetHighlights.Count - 1)
             {
-                if (slots[idx2 + 1].IsOccupied) rightIsStranger = true; // 埋まってたら他人
+                if (targetHighlights[idx2 + 1].IsOccupied) rightIsStranger = true; // 埋まってたら他人
                 if ((idx2 + 1) == idx1) rightIsStranger = false;        // ただし1体目なら味方
             }
 
@@ -442,28 +477,26 @@ namespace Enemy
             List<int> validIndices = new List<int>();
             if (StageManager.instance == null) return validIndices;
 
-            List<ToiletHighlight> slots = new List<ToiletHighlight>();
-            foreach (var t in StageManager.instance.toilet) if (t != null) slots.Add(t.GetComponent<ToiletHighlight>());
-            if (slots.Count == 0) return validIndices;
+            if (targetHighlights.Count == 0) return validIndices;
 
             if (myDrag == null) return validIndices;
 
             CardType type = myDrag.cardType;
             bool isParent = myDrag.isFamilyParent;
 
-            for (int i = 0; i < slots.Count; i++)
+            for (int i = 0; i < targetHighlights.Count; i++)
             {
-                if (slots[i].IsOccupied) continue;
-                if (!CheckFirstPlacementCondition(i, slots, type, isParent)) continue;
+                if (targetHighlights[i].IsOccupied) continue;
+                if (!CheckFirstPlacementCondition(i, targetHighlights, type, isParent)) continue;
 
                 // 2体目チェック（Friend/Familyのみ）
                 if (type == CardType.Friend || type == CardType.Family)
                 {
                     bool canPlaceSecond = false;
-                    for (int j = 0; j < slots.Count; j++)
+                    for (int j = 0; j < targetHighlights.Count; j++)
                     {
-                        if (i == j || slots[j].IsOccupied) continue;
-                        if (CheckSecondPlacementCondition(i, j, slots, type, isParent))
+                        if (i == j || targetHighlights[j].IsOccupied) continue;
+                        if (CheckSecondPlacementCondition(i, j, targetHighlights, type, isParent))
                         {
                             canPlaceSecond = true;
                             break;
