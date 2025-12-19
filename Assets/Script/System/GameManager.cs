@@ -20,7 +20,7 @@ namespace Systems
             GameEnd,
         }
 
-        private State state;
+        private State state = State.Ready;
 
         private bool isPlayerTurn;
         private bool isGameOver = false;
@@ -28,6 +28,7 @@ namespace Systems
         public bool IsReady
         {
             get { return state == State.Ready; }
+            set { if (value) state = State.Ready; }
         }
 
         public bool IsOnGame
@@ -70,15 +71,14 @@ namespace Systems
             set { isPlayerTurn = value; }
         }
 
-        // Start is called before the first frame update
-        void Start()
-        {
-            Initialization();
-        }
-
         // Update is called once per frame
         void Update()
         {
+            if (IsReady)
+            {
+                Initialization();
+            }
+
             if (IsOnGame)
             {
                 IsSelect = true;
@@ -93,11 +93,30 @@ namespace Systems
             {
                 GameOver();
             }
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                ResetGame();
+            }
         }
 
         void Initialization()
         {
             state = State.Ready;
+
+            Player.PlayerManager.instance.Initialization();
+            Enemy.EnemyManager.instance.Initialization();
+
+            Player.PlayerManager.instance.hands.Clear();
+            Enemy.EnemyManager.instance.hands.Clear();
+            DestroyChildAll(Player.PlayerManager.instance.parent);
+            DestroyChildAll(StageManager.instance.parent);
+
+            foreach (var toilet in StageManager.instance.toilet)
+            {
+                ToiletHighlight highlight = toilet.GetComponent<ToiletHighlight>();
+                highlight.Vacate();
+            }
 
             Cards.CardManager.instance.SetDeck();
             Cards.CardManager.instance.ShuffleDeck();
@@ -140,6 +159,23 @@ namespace Systems
                     Debug.Log("You Win");
                 }
                 isGameOver = true;
+            }
+        }
+
+        private void ResetGame()
+        {
+            Debug.Log("Restart");
+            IsReady = true;
+        }
+
+        // rootの子オブジェクトをすべてDestroyする
+        private void DestroyChildAll(Transform root)
+        {
+            //自分の子供を全て調べる
+            foreach (Transform child in root)
+            {
+                //自分の子供をDestroyする
+                Destroy(child.gameObject);
             }
         }
     }
