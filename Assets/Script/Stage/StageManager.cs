@@ -18,11 +18,9 @@ namespace Stage
         [SerializeField] private GameObject Family_p;
         [SerializeField] private GameObject Family_c;
 
-        [SerializeField]
-        private Transform GenerationPos;
+        [SerializeField] private Transform GenerationPos;
 
-        [SerializeField]
-        private Transform parent;
+        [SerializeField] public Transform parent;
 
         [Header("Toilet Settings")]
         [SerializeField] private GameObject toiletPrefab; 
