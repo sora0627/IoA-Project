@@ -34,7 +34,6 @@ namespace Player
             {
                 parent.gameObject.SetActive(true);
                 TurnStart();
-
             }
 
             if (GameManager.instance.IsSet)

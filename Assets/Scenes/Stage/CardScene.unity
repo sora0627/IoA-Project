@@ -1194,6 +1194,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f7d7b95e4e6cee4ca4a226c8dc6b0c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dropTargetsRootName: ToiletParent
   hands: []
   parent: {fileID: 317242588}
 --- !u!1 &1703110785
