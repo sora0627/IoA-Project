@@ -56,6 +56,11 @@ namespace Enemy
             }
         }
 
+        public void Initialization()
+        {
+            isDraw = false;
+        }
+
         public void SetTargetHighlights(List<GameObject> toilet)
         {
             targetHighlights.Clear();

@@ -13,7 +13,7 @@ namespace Player
         [SerializeField]
         public List<CardData> hands;
 
-        [SerializeField] private Transform parent;
+        [SerializeField] public Transform parent;
         [SerializeField] private List<Transform> HandPos;
 
         private GameObject currentSelectCard;
@@ -52,6 +52,12 @@ namespace Player
             {
                 TurnEnd();
             }
+        }
+
+        public void Initialization()
+        {
+            isDraw = false;
+            isGeneration = false;
         }
 
         public void SetCard()
