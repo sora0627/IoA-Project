@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Systems;
 using UnityEngine;
 
 namespace Cards
@@ -83,12 +84,18 @@ namespace Cards
                 case Move.CardType.Normal:
                 case Move.CardType.OldMan:
                     coolTime = UnityEngine.Random.Range(0, 100);
+                    if (GameManager.instance.turnValue >= 10) coolTime++; 
                     cardData.checkoutTime = OutTime(coolTime);
                     break; 
                 case Move.CardType.Friend:
                 case Move.CardType.Family:
                     coolTime = UnityEngine.Random.Range(0, 100);
                     coolTime1 = UnityEngine.Random.Range(0, 100);
+                    if (GameManager.instance.turnValue >= 10)
+                    {
+                        coolTime++;
+                        coolTime1++;
+                    }
                     cardData.checkoutTime = OutTime(coolTime);
                     cardData.checkoutTime1 = OutTime(coolTime1);
                     break;
