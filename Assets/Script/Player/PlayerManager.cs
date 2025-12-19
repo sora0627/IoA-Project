@@ -33,11 +33,8 @@ namespace Player
             if (GameManager.instance.IsSelect)
             {
                 parent.gameObject.SetActive(true);
+                TurnStart();
 
-                if (!isDraw)
-                {
-                    TurnStart();
-                }
             }
 
             if (GameManager.instance.IsSet)
@@ -229,11 +226,14 @@ namespace Player
 
         void TurnStart()
         {
-            isDraw = true;
-            CardManager.instance.DrawCard(hands);
-            SetCard();
+            if (!isDraw) 
+            { 
+                isDraw = true;
+                CardManager.instance.DrawCard(hands);
+                SetCard();
 
-            MouseDrag.CheckGameOverAtStartOfTurn(true, hands);
+                MouseDrag.CheckGameOverAtStartOfTurn(true, hands);
+            }
         }
 
         void TurnEnd()

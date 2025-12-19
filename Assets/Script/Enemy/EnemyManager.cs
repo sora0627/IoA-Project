@@ -35,11 +35,14 @@ namespace Enemy
 
             if (GameManager.instance.IsSelect)
             {
-                TrueStart();
+                TurnStart();
 
                 int index = SelectCard();
-                Debug.Log("インデックス：" + index);
-                if (index != -1) UseHand(index);
+                if (index != -1)
+                {
+                    UseHand(index);
+                    GameManager.instance.IsTrueEnd = true;
+                }
                 else
                 {
                     GameManager.instance.IsGameEnd = true;
@@ -47,9 +50,8 @@ namespace Enemy
                 }
             }
 
-            if (Input.GetKeyDown(KeyCode.N) || GameManager.instance.IsTrueEnd)
+            if (GameManager.instance.IsTrueEnd)
             {
-                GameManager.instance.IsTrueEnd = true;
                 TurnEnd();
             }
         }
@@ -151,7 +153,6 @@ namespace Enemy
         {
             StageManager.instance.CharacterGeneration(hands[index]);
             hands.RemoveAt(index);
-            //GameManager.instance.IsTrueEnd = true;
         }
 
         public void SetHuman(GameObject cloneObj, GameObject cloneObj1)
@@ -498,10 +499,9 @@ namespace Enemy
             
             Collider2D collider2D = obj.GetComponent<Collider2D>();
             if (collider2D != null) collider2D.enabled = false;
-            GameManager.instance.IsTrueEnd = true;
         }
 
-        void TrueStart()
+        void TurnStart()
         {
             if (!isDraw)
             {
