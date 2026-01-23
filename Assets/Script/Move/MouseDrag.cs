@@ -46,7 +46,7 @@ namespace Move
         private new Collider2D collider2D = null;
         private bool isLocked = false;
 
-        private ToiletHighlight currentSlot = null;
+        public ToiletHighlight currentSlot = null;
         public ToiletHighlight CurrentSlot => currentSlot;
         public bool IsPlaced => currentSlot != null;
 
@@ -144,8 +144,9 @@ namespace Move
 
             if (!canPlaceAnyCard)
             {
-                Debug.Log("ÅyGAME OVERÅzéËãlÇ‹ÇËÇ≈Ç∑ÅB");
-                if (GameManager.instance != null) GameManager.instance.IsGameEnd = true;
+                if (GameManager.instance != null)
+                    GameManager.instance.IsGameEnd = true;
+                return;
             }
             else
             {
@@ -332,6 +333,7 @@ namespace Move
         {
             isLocked = true;
             if (collider2D != null) collider2D.enabled = false;
+            GameManager.instance.IsTrueEnd = true;
         }
 
         private bool IsNextToPartner(int myIndex)

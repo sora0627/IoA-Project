@@ -13,14 +13,12 @@ namespace Player
         [SerializeField]
         public List<CardData> hands;
 
-        [SerializeField] private Transform parent;
+        [SerializeField] public Transform parent;
         [SerializeField] private List<Transform> HandPos;
 
         private GameObject currentSelectCard;
         private bool isDraw = false;
         private bool isGeneration = false;
-
-        public bool isSet = false;
 
         public GameObject SelectCard
         {
@@ -35,11 +33,7 @@ namespace Player
             if (GameManager.instance.IsSelect)
             {
                 parent.gameObject.SetActive(true);
-
-                if (!isDraw)
-                {
-                    TurnStart();
-                }
+                TurnStart();
             }
 
             if (GameManager.instance.IsSet)
@@ -50,13 +44,20 @@ namespace Player
                 {
                     isGeneration = true;
                     CardData cardData = SelectCard.GetComponent<CardData>();
-                    Stage.StageManager.instance.CharacterGeneration(cardData);
-                }
-                if (!isSet)
-                {
-                    TurnEnd();
+                    StageManager.instance.CharacterGeneration(cardData);
                 }
             }
+
+            if (GameManager.instance.IsTrueEnd)
+            {
+                TurnEnd();
+            }
+        }
+
+        public void Initialization()
+        {
+            isDraw = false;
+            isGeneration = false;
         }
 
         public void SetCard()
@@ -66,7 +67,6 @@ namespace Player
                 CardData cardData = hands[index];
                 GameObject card = cardData.gameObject;
                 card.transform.position = HandPos[index].position;
-                cardData.coolTime = Random.Range(2, 5);
                 card.transform.parent = parent;
             }
         }
@@ -231,17 +231,18 @@ namespace Player
 
         void TurnStart()
         {
-            isSet = false;
-            isDraw = true;
-            CardManager.instance.DrawCard(hands);
-            SetCard();
+            if (!isDraw) 
+            { 
+                isDraw = true;
+                CardManager.instance.DrawCard(hands);
+                SetCard();
 
-            Move.MouseDrag.CheckGameOverAtStartOfTurn(true, hands);
+                MouseDrag.CheckGameOverAtStartOfTurn(true, hands);
+            }
         }
 
         void TurnEnd()
         {
-            GameManager.instance.TurnChange();
             isDraw = false;
             isGeneration = false;
         }
