@@ -24,6 +24,7 @@ namespace Systems
 
         private bool isPlayerTurn;
         private bool isGameOver = false;
+        public int turnValue = 1;
 
         public bool IsReady
         {
@@ -82,6 +83,7 @@ namespace Systems
             if (IsOnGame)
             {
                 IsSelect = true;
+                Debug.Log(turnValue + "ターン目");
             }
 
             if (IsTrueEnd)
@@ -104,11 +106,14 @@ namespace Systems
         {
             state = State.Ready;
 
+            turnValue = 1;
+
             Player.PlayerManager.instance.Initialization();
             Enemy.EnemyManager.instance.Initialization();
 
             Player.PlayerManager.instance.hands.Clear();
             Enemy.EnemyManager.instance.hands.Clear();
+            Cards.CardManager.instance.deck.Clear();
             DestroyChildAll(Player.PlayerManager.instance.parent);
             DestroyChildAll(StageManager.instance.parent);
 
@@ -138,7 +143,7 @@ namespace Systems
 
         void TurnChange()
         {
-
+            AddTurn();
             IsPlayerTurn = !IsPlayerTurn;
             Debug.Log((isPlayerTurn) ? ("PlayerTurn") : ("EnemyTurn"));
             StageManager.instance.ReduseCheckoutTime();
@@ -160,6 +165,12 @@ namespace Systems
                 }
                 isGameOver = true;
             }
+        }
+
+        void AddTurn()
+        {
+            turnValue++;
+            Debug.Log(turnValue + "ターン目");
         }
 
         private void ResetGame()
