@@ -17,6 +17,7 @@ namespace Enemy
         [SerializeField] public List<CardData> hands;
 
         [SerializeField] private Transform parent;
+        [SerializeField] private CPUPlace cpuPlace;
 
         private List<ToiletHighlight> targetHighlights = new List<ToiletHighlight>();
         private bool isDraw = false;
@@ -177,6 +178,8 @@ namespace Enemy
             //-----変更点(CPU強化point)----//
             int firstIndex = RandomSelect(setPosition);
             //-----------------------------//
+
+            int i = cpuPlace.SelectPlace(setPosition);
 
             targetHighlights[firstIndex].SetOccupier(myDrag);
             myDrag.currentSlot = targetHighlights[firstIndex];
