@@ -1197,6 +1197,9 @@ MonoBehaviour:
   dropTargetsRootName: ToiletParent
   hands: []
   parent: {fileID: 317242588}
+  waitBeforeThinking: 1
+  waitAfterCardSelect: 1.5
+  waitAfterPlacement: 1
 --- !u!1 &1703110785
 GameObject:
   m_ObjectHideFlags: 0
