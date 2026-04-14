@@ -2,30 +2,19 @@ using UnityEngine;
 
 namespace Systems
 {
-    public class SoundManager : MonoBehaviour
+    public class SoundManager :Singleton<SoundManager>
     {
-        public static SoundManager instance { get; private set; }
-
         [Header("オーディオソース")]
         [SerializeField] private AudioSource bgmSource; //BGM用
         [SerializeField] private AudioSource seSource;  //SE用
 
         [Header("BGMクリップ")]
         public AudioClip mainBGM;
+        public AudioClip titleBGM;
 
         [Header("SEクリップ")]
-        public AudioClip hitSE;
-        public AudioClip breakSE;
-        public AudioClip itemSE;
-        public AudioClip countdownSE;
-        public AudioClip goSE;
+        public AudioClip setSE;
         public AudioClip winSE;
-
-        private void Awake()
-        {
-            if (instance == null) instance = this;
-            else Destroy(gameObject);
-        }
 
         private void Start()
         {
