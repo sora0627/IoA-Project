@@ -134,6 +134,8 @@ namespace Systems
             int rand = UnityEngine.Random.Range(0, 2);
             isPlayerTurn = (rand == 0) ? true : false;
             Debug.Log((isPlayerTurn) ? ("êÊçs") : ("å„çU"));
+            if (IsPlayerTurn) UI.TurnUIController.instance.ShowPlayerTurn();
+            else UI.TurnUIController.instance.ShowEnemyTurn();
         }
 
         void TurnChange()
@@ -142,6 +144,8 @@ namespace Systems
             IsPlayerTurn = !IsPlayerTurn;
             Debug.Log((isPlayerTurn) ? ("PlayerTurn") : ("EnemyTurn"));
             StageManager.instance.ReduseCheckoutTime();
+            if (IsPlayerTurn) UI.TurnUIController.instance.ShowPlayerTurn();
+            else UI.TurnUIController.instance.ShowEnemyTurn();
             IsSelect = true;
         }
 

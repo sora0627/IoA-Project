@@ -29,6 +29,9 @@ namespace Enemy
         private bool isThinking = false; // 二重実行防止フラグ
         private CardType currentSelectCardType;
 
+        // ★追加：前回のフレームでのターン状態を記録する変数
+        private bool wasEnemyTurn = false;
+
         // AI思考モジュール
         private EnemyAI enemyAI;
 
@@ -46,7 +49,20 @@ namespace Enemy
 
         void Update()
         {
+            bool isEnemyTurn = !GameManager.instance.IsPlayerTurn;
+
+            // ★相手ターンから自分のターンに切り替わった瞬間を検知し、状態を確実にリセットする
+            if (isEnemyTurn && !wasEnemyTurn)
+            {
+                Initialization();
+            }
+            wasEnemyTurn = isEnemyTurn;
+
+
             if (GameManager.instance.IsPlayerTurn) return;
+
+            // ★ターン開始アニメーション中は行動（思考）を開始しないようにブロックする
+            if (UI.TurnUIController.instance != null && UI.TurnUIController.instance.IsAnimating) return;
 
             // 敵の選択ターンが来て、かつまだ思考中でなければコルーチンを開始
             if (GameManager.instance.IsSelect && !isThinking)
@@ -54,6 +70,7 @@ namespace Enemy
                 StartCoroutine(EnemyTurnCoroutine());
             }
 
+            // 万が一の予備として残しておく
             if (GameManager.instance.IsTrueEnd)
             {
                 TurnEnd();
