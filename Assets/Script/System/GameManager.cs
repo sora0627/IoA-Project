@@ -142,6 +142,8 @@ namespace Systems
             IsPlayerTurn = !IsPlayerTurn;
             Debug.Log((isPlayerTurn) ? ("PlayerTurn") : ("EnemyTurn"));
             StageManager.instance.ReduseCheckoutTime();
+            if (IsPlayerTurn) UI.TurnUIController.instance.ShowPlayerTurn();
+            else UI.TurnUIController.instance.ShowEnemyTurn();
             IsSelect = true;
         }
 
