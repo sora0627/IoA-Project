@@ -23,6 +23,9 @@ namespace Player
         private bool isDraw = false;
         private bool isGeneration = false;
 
+        // ★追加：前回のフレームでのターン状態を記録する変数
+        private bool wasPlayerTurn = false;
+
         // 配置判定ロジックを担当するモジュール
         private PlayerPlacementValidator placementValidator = new PlayerPlacementValidator();
 
@@ -34,7 +37,19 @@ namespace Player
 
         void Update()
         {
+            // ★追加：相手ターンから自分のターンに切り替わった瞬間を検知し、状態を確実にリセットする
+            if (GameManager.instance.IsPlayerTurn && !wasPlayerTurn)
+            {
+                Initialization();
+            }
+            wasPlayerTurn = GameManager.instance.IsPlayerTurn;
+
+
             if (!GameManager.instance.IsPlayerTurn) return;
+
+            // アニメーション中は行動（操作やドローなど）できないようにブロックする
+            if (UI.TurnUIController.instance != null && UI.TurnUIController.instance.IsAnimating) return;
+
 
             if (GameManager.instance.IsSelect)
             {
@@ -54,6 +69,7 @@ namespace Player
                 }
             }
 
+            // 万が一の予備として残しておく
             if (GameManager.instance.IsTrueEnd)
             {
                 TurnEnd();

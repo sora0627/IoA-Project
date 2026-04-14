@@ -20,6 +20,8 @@ namespace UI
         [Tooltip("•¶Žš‚ªŒ©‚¦‚Ä‚¢‚éŽžŠÔ")]
         [SerializeField] private float visibleDuration = 1.0f;
 
+        public bool IsAnimating { get; private set; } = false;
+
         protected override void Awake()
         {
             base.Awake();
@@ -51,6 +53,8 @@ namespace UI
         {
             if (targetUI == null) yield break;
 
+            IsAnimating = true;
+
             targetUI.SetActive(true);
             targetUI.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
 
@@ -61,6 +65,8 @@ namespace UI
             yield return StartCoroutine(RotateX(targetUI.transform, 0f, 90f, rotationDuration));
 
             targetUI.SetActive(false);
+
+            IsAnimating = false;
         }
 
         private IEnumerator RotateX(Transform targetTransform, float startAngle, float endAngle, float duration)
