@@ -12,13 +12,10 @@ namespace Systems
 
         [Header("BGMクリップ")]
         public AudioClip mainBGM;
+        public AudioClip titleBGM;
 
         [Header("SEクリップ")]
-        public AudioClip hitSE;
-        public AudioClip breakSE;
-        public AudioClip itemSE;
-        public AudioClip countdownSE;
-        public AudioClip goSE;
+        public AudioClip setSE;
         public AudioClip winSE;
 
         private void Awake()
