@@ -9,6 +9,9 @@ namespace Systems
 {
     public class GameManager : Singleton<GameManager>
     {
+        [Header("èüîsUIÇÉZÉbÉgÇµÇƒÇ≠ÇæÇ≥Ç¢")]
+        public GameObject winUI;
+        public GameObject loseUI;
         enum State
         {
             Ready,
@@ -223,10 +226,12 @@ namespace Systems
                 if (IsPlayerTurn)
                 {
                     Debug.Log("You Lose");
+                    if (loseUI != null) loseUI.SetActive(true);
                 }
                 else
                 {
                     Debug.Log("You Win");
+                    if (winUI != null) winUI.SetActive(true);
                 }
                 isGameOver = true;
             }
