@@ -9,6 +9,9 @@ namespace Systems
 {
     public class GameManager : Singleton<GameManager>
     {
+        [Header("勝敗UIをセットしてください")]
+        public GameObject winUI;
+        public GameObject loseUI;
         enum State
         {
             Ready,
@@ -21,6 +24,7 @@ namespace Systems
         }
 
         private State state = State.Ready;
+        private State previousState = State.Ready; // ポーズ前の状態を保持する変数
 
         private bool isPlayerTurn;
         private bool isGameOver = false;
@@ -62,7 +66,7 @@ namespace Systems
         public bool IsGameEnd
         {
             get { return state == State.GameEnd; }
-            set { if(value) state = State.GameEnd; }
+            set { if (value) state = State.GameEnd; }
         }
 
         public bool IsPlayerTurn
@@ -74,6 +78,22 @@ namespace Systems
         // Update is called once per frame
         void Update()
         {
+            // リセット処理（ポーズ中もやり直せるように先頭に配置）
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                if (IsPause) ResumeGame(); // ポーズ中にリセットした場合は時間停止を解除
+                ResetGame();
+            }
+
+            // ESCキーでポーズ画面の切り替え
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                TogglePause();
+            }
+
+            // ★ポーズ中はこれ以降のゲーム進行（状態遷移）を行わない
+            if (IsPause) return;
+
             if (IsReady)
             {
                 Initialization();
@@ -93,16 +113,66 @@ namespace Systems
             {
                 GameOver();
             }
+        }
 
-            if (Input.GetKeyDown(KeyCode.Space))
+        /// <summary>
+        /// ポーズの切り替えを行います
+        /// </summary>
+        public void TogglePause()
+        {
+            // ★通常のゲーム中以外（準備中やゲームオーバー後）はポーズの切り替えを行わない
+            if (state == State.Ready || state == State.GameEnd || isGameOver) return;
+
+            if (IsPause)
             {
-                ResetGame();
+                ResumeGame();
             }
+            else
+            {
+                PauseGame();
+            }
+        }
+
+        /// <summary>
+        /// ゲームを一時停止します
+        /// </summary>
+        private void PauseGame()
+        {
+            previousState = state; // 現在の進行状況（SelectやSet等）を記憶
+            state = State.Pause;
+
+            // ゲーム内時間を停止（コルーチンの待機やアニメーションが止まります）
+            Time.timeScale = 0f;
+
+            Debug.Log("【Pause】ゲームを一時停止しました");
+
+            // TODO: UIManagerなどでポーズ画面（UI）を表示する処理をここに記述します
+            // 例: UIManager.instance.ShowPauseMenu();
+        }
+
+        /// <summary>
+        /// ゲームを再開します
+        /// </summary>
+        public void ResumeGame()
+        {
+            state = previousState; // 記憶していた進行状況を復元
+
+            // ゲーム内時間を再開
+            Time.timeScale = 1f;
+
+            Debug.Log("【Resume】ゲームを再開しました");
+
+            // TODO: UIManagerなどでポーズ画面（UI）を非表示にする処理をここに記述します
+            // 例: UIManager.instance.HidePauseMenu();
         }
 
         void Initialization()
         {
             state = State.Ready;
+            isGameOver = false;
+
+            // 初期化時に時間の進み方を確実に戻す
+            Time.timeScale = 1f;
 
             Player.PlayerManager.instance.Initialization();
             Enemy.EnemyManager.instance.Initialization();
@@ -138,9 +208,13 @@ namespace Systems
             else UI.TurnUIController.instance.ShowEnemyTurn();
         }
 
+        public void StartBgm()
+        {
+            SoundManager.instance.PlayBGM(SoundManager.instance.mainBGM);
+
+        }
         void TurnChange()
         {
-
             IsPlayerTurn = !IsPlayerTurn;
             Debug.Log((isPlayerTurn) ? ("PlayerTurn") : ("EnemyTurn"));
             StageManager.instance.ReduseCheckoutTime();
@@ -157,10 +231,12 @@ namespace Systems
                 if (IsPlayerTurn)
                 {
                     Debug.Log("You Lose");
+                    if (loseUI != null) loseUI.SetActive(true);
                 }
                 else
                 {
                     Debug.Log("You Win");
+                    if (winUI != null) winUI.SetActive(true);
                 }
                 isGameOver = true;
             }
