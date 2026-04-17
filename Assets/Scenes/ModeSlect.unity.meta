@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/Scenes/Stage/MainScene.unity.meta
+guid: 96bde27e0a65a154f9551400a557f0d2
+=======
 guid: 338a57fd1a8f49d4eaea59b3cb30cabd
+>>>>>>> f26774485d23372f5ba4f4a8e902dc08324b7ce0:Assets/Scenes/ModeSlect.unity.meta
 DefaultImporter:
   externalObjects: {}
   userData: 

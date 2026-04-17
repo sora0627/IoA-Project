@@ -18,6 +18,7 @@ namespace Enemy
 
         [SerializeField] public List<CardData> hands;
         [SerializeField] private Transform parent;
+        [SerializeField] private CPUPlace cpuPlace;
 
         [Header("AI 思考時間設定（秒）")]
         [SerializeField] private float waitBeforeThinking = 1.0f; // ターン開始時の待機時間
@@ -157,11 +158,20 @@ namespace Enemy
                 PlaceCharacterAt(myDrag, firstIndex);
             }
 
+<<<<<<< HEAD
+            int i = cpuPlace.SelectPlace(setPosition);
+
+            targetHighlights[firstIndex].SetOccupier(myDrag);
+            myDrag.currentSlot = targetHighlights[firstIndex];
+            cloneObj.transform.position = targetHighlights[firstIndex].gameObject.transform.position;
+            LockCard(cloneObj);
+=======
             // 2体目の配置（ある場合）
             if (cloneObj1 != null && firstIndex != -1)
             {
                 MouseDrag myDrag1 = cloneObj1.GetComponent<MouseDrag>();
                 int secondIndex = enemyAI.DetermineSecondPlacement(myDrag1, firstIndex, targetHighlights);
+>>>>>>> f26774485d23372f5ba4f4a8e902dc08324b7ce0
 
                 if (secondIndex != -1)
                 {
