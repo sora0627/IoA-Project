@@ -16,11 +16,6 @@ namespace Systems
         public AudioClip setSE;
         public AudioClip winSE;
 
-        private void Start()
-        {
-            PlayBGM(mainBGM);
-        }
-
         public void PlayBGM(AudioClip clip)
         {
             if (clip == null) return;

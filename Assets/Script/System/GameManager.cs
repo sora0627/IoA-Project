@@ -138,6 +138,11 @@ namespace Systems
             else UI.TurnUIController.instance.ShowEnemyTurn();
         }
 
+        public void StartBgm()
+        {
+            SoundManager.instance.PlayBGM(SoundManager.instance.mainBGM);
+
+        }
         void TurnChange()
         {
 
