@@ -44,6 +44,7 @@ namespace Enemy
 
         /// <summary>
         /// 1体目の配置場所をランダムに決定します。
+        /// 友達使用時の場合かつ6マス以上の空きがあったときのプログラムを変更　追加↓
         /// </summary>
         public int DetermineFirstPlacement(MouseDrag myDrag, List<ToiletHighlight> targetHighlights)
         {
@@ -53,12 +54,41 @@ namespace Enemy
             CardType type = myDrag.cardType;
             bool isParent = myDrag.isFamilyParent;
 
+            // ★ 6マス以上の空きがあるか
+            bool hasWideSpace = HasWideEmptySpace(targetHighlights, 6);
+
             for (int i = 0; i < targetHighlights.Count; i++)
             {
                 if (targetHighlights[i].IsOccupied) continue;
                 if (!CheckFirstPlacementCondition(i, targetHighlights, type, isParent)) continue;
 
-                // ペア生成カード（Friend, Family）の場合は、2体目が置けるかも確認する
+                // ★ Friend の特別ルール（広い空きがある場合）
+                if (type == CardType.Friend && hasWideSpace)
+                {
+                    int[] candidates = { i - 3, i + 3 };
+
+                    bool canPlaceSecond = false;
+                    foreach (int idx in candidates)
+                    {
+                        if (idx < 0 || idx >= targetHighlights.Count) continue;
+                        if (targetHighlights[idx].IsOccupied) continue;
+
+                        if (CheckSecondPlacementCondition(i, idx, targetHighlights, type, isParent))
+                        {
+                            canPlaceSecond = true;
+                            break;
+                        }
+                    }
+
+                    if (canPlaceSecond)
+                    {
+                        validIndices.Add(i);
+                    }
+
+                    continue;
+                }
+
+                // ★ 通常ルール（隣に置けるか）
                 if (type == CardType.Friend || type == CardType.Family)
                 {
                     bool canPlaceSecond = false;
@@ -75,7 +105,6 @@ namespace Enemy
                 }
                 else
                 {
-                    // 1体のみのカードなら条件クリアでOK
                     validIndices.Add(i);
                 }
             }
@@ -86,6 +115,8 @@ namespace Enemy
         /// <summary>
         /// 1体目の配置場所（firstIndex）を基に、2体目の配置場所をランダムに決定します。
         /// </summary>
+
+        //2体目の友達の置き場所調整　追加↓
         public int DetermineSecondPlacement(MouseDrag myDrag, int firstIndex, List<ToiletHighlight> targetHighlights)
         {
             if (myDrag == null || targetHighlights.Count == 0 || firstIndex == -1) return -1;
@@ -93,10 +124,33 @@ namespace Enemy
             List<int> validIndices = new List<int>();
             CardType type = myDrag.cardType;
 
-            // ★修正点: CheckSecondPlacementCondition が求めているのは「1体目が親かどうか(isParent1)」
-            // 家族(Family)の場合、2体目(myDrag)が親なら1体目は子、2体目が子なら1体目は親になります。
+            // ★ 6マス以上の空きがあるかチェック
+            bool hasWideSpace = HasWideEmptySpace(targetHighlights, 6);
+
+            // Family の親子判定はそのまま
             bool isParent1 = type == CardType.Family ? !myDrag.isFamilyParent : myDrag.isFamilyParent;
 
+            if (type == CardType.Friend && hasWideSpace)
+            {
+                // ★ Friend の特別ルール：2マス空ける
+                int[] candidates = { firstIndex - 3, firstIndex + 3 };
+
+                foreach (int idx in candidates)
+                {
+                    if (idx < 0 || idx >= targetHighlights.Count) continue;
+                    if (targetHighlights[idx].IsOccupied) continue;
+
+                    if (CheckSecondPlacementCondition(firstIndex, idx, targetHighlights, type, isParent1))
+                    {
+                        validIndices.Add(idx);
+                    }
+                }
+
+                return RandomSelect(validIndices);
+            }
+
+
+            // ★ 通常ルール（隣に置く）
             for (int j = 0; j < targetHighlights.Count; j++)
             {
                 if (firstIndex == j || targetHighlights[j].IsOccupied) continue;
@@ -108,6 +162,13 @@ namespace Enemy
             }
 
             return RandomSelect(validIndices);
+        }
+        //空き判定　追加↓
+        private bool HasWideEmptySpace(List<ToiletHighlight> highlights, int width)
+        {
+            List<bool> isOccupied = highlights.Select(h => h.IsOccupied).ToList();
+            List<int> spaces = GetContinuousEmptySpaces(isOccupied);
+            return spaces.Any(s => s >= width);
         }
 
         // =================================================================================
@@ -138,6 +199,7 @@ namespace Enemy
             return canPosition;
         }
 
+        //優先順位　ここ
         private List<CardType> GetPriority(List<int> emptySpaces, List<CardData> hands)
         {
             bool haveOldman = hands.Any(card => card.Type == CardType.OldMan);
@@ -239,6 +301,7 @@ namespace Enemy
             return false;
         }
 
+        //場所を決めるやつ　ここ
         private int RandomSelect(List<int> list)
         {
             if (list == null || list.Count == 0) return -1;
