@@ -18,7 +18,6 @@ namespace Enemy
 
         [SerializeField] public List<CardData> hands;
         [SerializeField] private Transform parent;
-        [SerializeField] public CPUPlace cpuPlace;
 
         [Header("AI 思考時間設定（秒）")]
         [SerializeField] private float waitBeforeThinking = 1.0f; // ターン開始時の待機時間
