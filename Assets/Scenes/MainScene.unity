@@ -1540,7 +1540,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.3
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -1638,10 +1638,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bgmSource: {fileID: 1130433881}
   seSource: {fileID: 1130433880}
-  mainBGM: {fileID: 0}
-  titleBGM: {fileID: 0}
+  mainBGM: {fileID: 8300000, guid: 0e611ed3267d62542904aa027df479c3, type: 3}
+  titleBGM: {fileID: 8300000, guid: c5c5f926dd88063419253a8b6e63df50, type: 3}
   setSE: {fileID: 0}
-  winSE: {fileID: 0}
+  winSE: {fileID: 8300000, guid: 3e77ee788d384944393f504b35e46227, type: 3}
+  loseSE: {fileID: 8300000, guid: a2bd017777bc1164b9c4dcb989f1f426, type: 3}
 --- !u!4 &1130433883
 Transform:
   m_ObjectHideFlags: 0
