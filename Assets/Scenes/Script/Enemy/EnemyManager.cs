@@ -157,6 +157,10 @@ namespace Enemy
                 PlaceCharacterAt(myDrag, firstIndex);
             }
 
+            targetHighlights[firstIndex].SetOccupier(myDrag);
+            myDrag.currentSlot = targetHighlights[firstIndex];
+            cloneObj.transform.position = targetHighlights[firstIndex].gameObject.transform.position;
+            LockCard(cloneObj);
             // 2体目の配置（ある場合）
             if (cloneObj1 != null && firstIndex != -1)
             {
