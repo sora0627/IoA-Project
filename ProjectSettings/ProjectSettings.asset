@@ -12,7 +12,7 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: IoA
+  companyName: "\u4EEE\u30B2\u30FC\u30E0\u30C1\u30FC\u30E0"
   productName: "\u30B8\u30A7\u30F3\u30C8\u30EB\u30DE\u30F3\u30BA\u30C7\u30A3\u30B9\u30BF\u30F3\u30B9"
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
