@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Systems
 {
-    public class SoundManager :Singleton<SoundManager>
+    public class SoundManager :SingletonDontDestroy<SoundManager>
     {
         [Header("オーディオソース")]
         [SerializeField] private AudioSource bgmSource; //BGM用
@@ -21,6 +21,7 @@ namespace Systems
         {
             if (clip == null) return;
 
+            bgmSource.time = 0f;
             bgmSource.clip = clip;
             bgmSource.loop = true;
             bgmSource.Play();

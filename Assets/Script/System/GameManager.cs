@@ -211,6 +211,7 @@ namespace Systems
 
         public void StartBgm()
         {
+            SoundManager.instance.StopBGM();
             SoundManager.instance.PlayBGM(SoundManager.instance.mainBGM);
         }
         void TurnChange()
