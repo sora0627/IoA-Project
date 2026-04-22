@@ -523,6 +523,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78f2099b614d0e542b40d4f876835a28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  winUI: {fileID: 2014401118}
+  loseUI: {fileID: 1108751892}
 --- !u!4 &267014786
 Transform:
   m_ObjectHideFlags: 0
