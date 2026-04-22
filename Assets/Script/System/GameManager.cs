@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEditor.Purchasing;
 using UnityEngine;
 using System;
+using Player;
 
 namespace Systems
 {
@@ -226,6 +227,7 @@ namespace Systems
         {
             if (!isGameOver)
             {
+                PlayerManager.instance.parent.gameObject.SetActive(false);
                 Debug.Log("ÅyGAME OVERÅzéËãlÇ‹ÇËÇ≈Ç∑ÅB");
                 SoundManager.instance.StopBGM();
                 if (IsPlayerTurn)
