@@ -211,6 +211,7 @@ namespace Systems
         public void StartBgm()
         {
             SoundManager.instance.PlayBGM(SoundManager.instance.mainBGM);
+
         }
         void TurnChange()
         {
@@ -227,17 +228,14 @@ namespace Systems
             if (!isGameOver)
             {
                 Debug.Log("ÅyGAME OVERÅzéËãlÇ‹ÇËÇ≈Ç∑ÅB");
-                SoundManager.instance.StopBGM();
                 if (IsPlayerTurn)
                 {
                     Debug.Log("You Lose");
-                    SoundManager.instance.PlaySE(SoundManager.instance.loseSE);
                     if (loseUI != null) loseUI.SetActive(true);
                 }
                 else
                 {
                     Debug.Log("You Win");
-                    SoundManager.instance.PlaySE(SoundManager.instance.winSE);
                     if (winUI != null) winUI.SetActive(true);
                 }
                 isGameOver = true;

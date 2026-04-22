@@ -15,7 +15,6 @@ namespace Systems
         [Header("SEƒNƒŠƒbƒv")]
         public AudioClip setSE;
         public AudioClip winSE;
-        public AudioClip loseSE;
 
         public void PlayBGM(AudioClip clip)
         {
